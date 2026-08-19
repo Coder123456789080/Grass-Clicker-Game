@@ -1,1 +1,174 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Grass Clicker</title>
+</head>
+<body>
+<div class="header-bar">
+<h1>Grass Clicker</h1>
+<div class="resource-box">
+<p id="gemCount">Ascended Gems: 0</p>
+<p id="grassCount">Grass Seeds: 0</p>
+</div>
+</div>
+<section>
+<div class="main">
+<div class="center-area">
+<img id="grass" src="https://opengameart.org/sites/default/files/grass.png" alt="Grass" style="border:5px solid black" draggable="false" onclick="incrementGrass()">
+</div>
+<div class="shop-panel">
+<h2>Shop</h2>
+<div class="categories">
+<button onclick="showCategory('upgrades')">Upgrades</button>
+<button id="godsTab" onclick="showCategory('gods')">Gods</button>
+<button id="petsTab" onclick="showCategory('pets')">Pets</button>
+</div>
+<div class="shop-content">
+<div id="upgrades">
+<button class="upgrade" onclick="buyClickUpgrade()">Grass Seeder:<br>+1 Grass Per Click<br>Cost: <span id="grassSeederPrice">50</span> Seeds</button>
+<button class="upgrade" onclick="buyAutoUpgrade()">Auto Grasser:<br>+1 Grass Every 5 Seconds<br>Cost: <span id="autoGrasserPrice">100</span> Seeds</button>
+<button class="upgrade" onclick="buyBetterSeeds()">Better Seeds:<br>+2 Grass Per Click<br>Cost: <span id="betterSeedsPrice">200</span> Seeds</button>
+<button class="upgrade" onclick="buyGrasserV2()">Grasser v2:<br>+2 Grass Every 3 Seconds<br>Cost: <span id="grasserV2Price">400</span> Seeds</button>
+<button class="upgrade" onclick="buyCollector()">Grass Collector:<br>+3 Grass Per Click<br>Cost: <span id="collectorPrice">800</span> Seeds</button>
+<button class="upgrade" onclick="buyRustyMower()">Rusty Lawn Mower:<br>10% Crit Chance<br>Cost: <span id="rustyMowerPrice">1000</span> Seeds</button>
+<button class="upgrade" onclick="buyWishFertilizer()">Wish.com Fertilizer:<br>Golden Worms Every 50 Clicks<br>Cost: <span id="wishFertilizerPrice">2000</span> Seeds</button>
+<button class="upgrade" onclick="buyEliteSeeder()">Elite Seeder:<br>+5 Grass Per Click<br>Cost: <span id="eliteSeederPrice">2500</span> Seeds</button>
+<button class="upgrade" onclick="buyRoboticGrasser()">Robotic Grasser:<br>+5 Grass Every 2 Seconds<br>Cost: <span id="roboticGrasserPrice">2800</span> Seeds</button>
+<button class="upgrade" onclick="buyFertileGrass()">Fertile Grass:<br>+10 Grass Every 15 Clicks<br>Cost: <span id="fertileGrassPrice">3000</span> Seeds</button>
+<button class="upgrade" onclick="buyMasterGrasser()">Master Grasser:<br>+10 Grass Per Click<br>Cost: <span id="masterGrasserPrice">3500</span> Seeds</button>
+<button class="upgrade" onclick="buyLuckySeeds()">Lucky Seeds:<br>25% Chance for 1000 Grass Every 100 Clicks<br>Cost: <span id="luckySeedsPrice">4000</span> Seeds</button>
+<button class="upgrade" onclick="buyGrassFarmer()">Grass Farmer:<br>+10 Grass Every 2 Seconds & Unlocks Ascension<br>Cost: <span id="grassFarmerPrice">5000</span> Seeds</button>
+<button class="upgrade" onclick="buyChemicalFertilizer()">Chemical Fertilizer:<br>5% Chance Auto Grass x10 for 30s<br>Cost: <span id="chemicalFertilizerPrice">6000</span> Seeds</button>
+<button class="upgrade" onclick="buyScarecrow()">Scarecrow:<br>+15 Grass Per Click<br>Cost: <span id="scarecrowPrice">6500</span> Seeds</button>
+<button class="upgrade" onclick="buyAIGrasser()">AI Grasser:<br>+15 Grass Every 1 Second<br>Cost: <span id="aiGrasserPrice">7000</span> Seeds</button>
+<button class="upgrade" onclick="buyMagicFertilizer()">Magic Fertilizer:<br>10% Chance Double Grass<br>Cost: <span id="magicFertilizerPrice">7500</span> Seeds</button>
+<button class="upgrade" onclick="buyWormFarm()">Worm Farm:<br>20% Chance for 1000 Grass Every 10 Clicks<br>Cost: <span id="wormFarmPrice">8000</span> Seeds</button>
+<button class="upgrade" onclick="buyGrassGenie()">Grass Genie:<br>+20 Grass Per Click<br>Cost: <span id="grassGeniePrice">8500</span> Seeds</button>
+<button class="upgrade" onclick="buyHumanoidGrasser()">Humanoid Grasser:<br>+20 Grass Every 0.9 Seconds<br>Cost: <span id="humanoidGrasserPrice">9000</span> Seeds</button>
+<button class="upgrade" onclick="buyGrassGod()">Grass God:<br>+50 Grass Every 3 Clicks<br>Cost: <span id="grassGodPrice">9500</span> Seeds</button>
+<button class="upgrade" onclick="buyTimeToGrass()">Time to Grass:<br>+30 Grass Per Click<br>Cost: <span id="timeToGrassPrice">10000</span> Seeds</button>
+<button id="ascendButton" class="ascend" onclick="ascend()">ASCEND<br>Reset Progress For Power</button>
+</div>
+<div id="gods" style="display:none">
+<h3>Gods</h3>
+<p class="godInfo">Spend Ascended Gems to permanently strengthen your game.</p>
+<div class="godCard">
+<h3>Gaia</h3>
+<p class="godTitle">God of Nature</p>
+<p id="gaiaLevel">Level 0/4</p>
+<p>Grass Per Click +5%</p>
+<div class="godCost">
+<img src="Images/Green Gem png.png" class="godGem">
+<span id="gaiaCost">1 Gem</span>
+</div>
+<button class="buyGod" onclick="buyGaiaUpgrade()">Upgrade</button>
+</div>
+<div class="godCard">
+<h3>Nero</h3>
+<p class="godTitle">God of Growth</p>
+<p id="neroLevel">Level 0/4</p>
+<p>Automatic Grass +5%</p>
+<div class="godCost">
+<img src="Images/Green Gem png.png" class="godGem">
+<span id="neroCost">1 Gem</span>
+</div>
+<button class="buyGod" onclick="buyNeroUpgrade()">Upgrade</button>
+</div>
+<div class="godCard">
+<h3>Tempest</h3>
+<p class="godTitle">God of Storms</p>
+<p id="tempestLevel">Level 0/4</p>
+<p>Grass upgrades give +1 more</p>
+<div class="godCost">
+<img src="Images/Green Gem png.png" class="godGem">
+<span id="tempestCost">1 Gem</span>
+</div>
+<button class="buyGod" onclick="buyTempestUpgrade()">Upgrade</button>
+</div>
+<div class="godCard">
+<h3>Colossus</h3>
+<p class="godTitle">God of Giants</p>
+<p id="colossusLevel">Level 0/4</p>
+<p>+5% Critical Click Chance</p>
+<div class="godCost">
+<img src="Images/Green Gem png.png" class="godGem">
+<span id="colossusCost">1 Gem</span>
+</div>
+<button class="buyGod" onclick="buyColossusUpgrade()">Upgrade</button>
+</div>
+<div class="godCard">
+<h3>Ignis</h3>
+<p class="godTitle">God of Fire</p>
+<p id="ignisLevel">Level 0/4</p>
+<p>+1 Ascended Gem Every Ascension</p>
+<div class="godCost">
+<img src="Images/Green Gem png.png" class="godGem">
+<span id="ignisCost">1 Gem</span>
+</div>
+<button class="buyGod" onclick="buyIgnisUpgrade()">Upgrade</button>
+</div>
+<div class="godCard">
+<h3>Costos</h3>
+<p class="godTitle">God of Wealth</p>
+<p id="costosLevel">Level 0/4</p>
+<p>Upgrade Prices -5%</p>
+<div class="godCost">
+<img src="Images/Green Gem png.png" class="godGem">
+<span id="costosCost">1 Gem</span>
+</div>
+<button class="buyGod" onclick="buyCostosUpgrade()">Upgrade</button>
+</div>
+<div class="godCard">
+<h3>Duos</h3>
+<p class="godTitle">God of Balance</p>
+<p id="duosLevel">Level 0/4</p>
+<p>Grass Per Click +3%<br>Auto Grass +3%</p>
+<div class="godCost">
+<img src="Images/Green Gem png.png" class="godGem">
+<span id="duosCost">1 Gem</span>
+</div>
+<button class="buyGod" onclick="buyDuosUpgrade()">Upgrade</button>
+</div>
+<div class="godCard">
+<h3>Riskis</h3>
+<p class="godTitle">God of Luck</p>
+<p id="riskisLevel">Level 0/4</p>
+<p>Luck Boost +10%</p>
+<div class="godCost">
+<img src="Images/Green Gem png.png" class="godGem">
+<span id="riskisCost">1 Gem</span>
+</div>
+<button class="buyGod" onclick="buyRiskisUpgrade()">Upgrade</button>
+</div>
+<div class="godCard">
+<h3>Lumos</h3>
+<p class="godTitle">God of Light</p>
+<p id="lumosLevel">Level 0/4</p>
+<p>All God Bonuses +5%</p>
+<div class="godCost">
+<img src="Images/Green Gem png.png" class="godGem">
+<span id="lumosCost">1 Gem</span>
+</div>
+<button class="buyGod" onclick="buyLumosUpgrade()">Upgrade</button>
+</div>
+</div>
+<div id="pets" style="display:none">
+<h3>Pets</h3>
+<p>Unlock With Ascension</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<svg width="0" height="0">
+<filter id="grassWarp">
+<feTurbulence id="grassNoise" type="fractalNoise" baseFrequency="0.03" numOctaves="3"/>
+<feDisplacementMap in="SourceGraphic" in2="grassNoise" scale="5"/>
+</filter>
+</svg>
+<script src="index.js"></script>
+</body>
+</html>
