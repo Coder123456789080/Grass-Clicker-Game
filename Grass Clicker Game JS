@@ -1,1 +1,391 @@
+let grass=0;
+let grassPerClick=1;
+let clicks=0;
+let critChance=0;
+let goldenWorms=false;
+let fertileGrass=false;
+let luckySeeds=false;
+let chemicalFertilizer=false;
+let magicFertilizer=false;
+let wormFarm=false;
+let grassGod=false;
+let canAscend=false;
+let ascendedGems=0;
+let autoTimers=[];
+let gaiaLevel=0,gaiaCost=1,gaiaMultiplier=1;
+let neroLevel=0,neroCost=1,neroMultiplier=1;
+let tempestLevel=0,tempestCost=1,tempestBonus=0;
+let colossusLevel=0,colossusCost=1;
+let ignisLevel=0,ignisCost=1;
+let costosLevel=0,costosCost=1,costosMultiplier=1;
+let duosLevel=0,duosCost=1,duosMultiplier=1;
+let riskisLevel=0,riskisCost=1,riskisLuck=0;
+let lumosLevel=0,lumosCost=1,lumosMultiplier=1;
 
+const grassImage=document.getElementById("grass");
+const noise=document.getElementById("grassNoise");
+
+grassImage.addEventListener("mousemove",event=>{
+    const rect=grassImage.getBoundingClientRect();
+    const x=(event.clientX-rect.left)/rect.width;
+    const y=(event.clientY-rect.top)/rect.height;
+    noise.setAttribute("seed",(x+y)*100);
+    grassImage.style.transform=`translate(${(x-.5)*8}px,${(y-.5)*8}px) scale(1.03)`;
+});
+
+grassImage.addEventListener("mouseleave",()=>{
+    grassImage.style.transform="translate(0,0) scale(1)";
+    noise.setAttribute("seed",0);
+});
+
+function incrementGrass(){
+    clicks++;
+    let gain=(grassPerClick+tempestBonus)*gaiaMultiplier*duosMultiplier;
+
+    if(Math.random()<critChance)gain*=2;
+    if(fertileGrass&&clicks%15===0)gain+=10;
+    if(goldenWorms&&clicks%50===0)gain+=100;
+    if(grassGod&&clicks%3===0)gain+=50;
+    if(luckySeeds&&clicks%100===0&&Math.random()<getLuckChance(.25))gain+=1000;
+    if(wormFarm&&clicks%10===0&&Math.random()<getLuckChance(.20))gain+=1000;
+    if(magicFertilizer&&Math.random()<getLuckChance(.10))gain*=2;
+
+    grass+=gain;
+    showGrassGain(gain);
+    updateGrass();
+}
+
+function formatNumber(num){
+    return Number.isInteger(num)?num:parseFloat(num.toFixed(2));
+}
+
+function updateGrass(){
+    document.getElementById("grassCount").innerHTML="Grass Seeds: "+formatNumber(grass);
+}
+
+function buyUpgrade(cost,action){
+    cost=upgradeCost(cost);
+    if(grass<cost)return;
+    grass-=cost;
+    action();
+    updateGrass();
+}
+
+function buyClickUpgrade(){
+    buyUpgrade(50,()=>grassPerClick++);
+}
+
+function buyAutoUpgrade(){
+    buyUpgrade(100,()=>{
+        autoTimers.push(setInterval(()=>addAutoGrass(1),5000));
+    });
+}
+
+function buyBetterSeeds(){
+    buyUpgrade(200,()=>grassPerClick+=2);
+}
+
+function buyGrasserV2(){
+    buyUpgrade(400,()=>{
+        autoTimers.push(setInterval(()=>addAutoGrass(2),3000));
+    });
+}
+
+function buyCollector(){
+    buyUpgrade(800,()=>grassPerClick+=3);
+}
+
+function buyRustyMower(){
+    buyUpgrade(1000,()=>critChance=.1);
+}
+
+function buyWishFertilizer(){
+    buyUpgrade(2000,()=>goldenWorms=true);
+}
+
+function buyEliteSeeder(){
+    buyUpgrade(2500,()=>grassPerClick+=5);
+}
+
+function buyRoboticGrasser(){
+    buyUpgrade(2800,()=>{
+        autoTimers.push(setInterval(()=>addAutoGrass(5),2000));
+    });
+}
+
+function buyFertileGrass(){
+    buyUpgrade(3000,()=>fertileGrass=true);
+}
+
+function buyMasterGrasser(){
+    buyUpgrade(3500,()=>grassPerClick+=10);
+}
+
+function buyLuckySeeds(){
+    buyUpgrade(4000,()=>luckySeeds=true);
+}
+
+function buyGrassFarmer(){
+    buyUpgrade(5000,()=>{
+        autoTimers.push(setInterval(()=>addAutoGrass(10),2000));
+        unlockAscension();
+    });
+}
+
+function unlockAscension(){
+    canAscend=true;
+    const button=document.getElementById("ascendButton");
+    button.disabled=false;
+    document.getElementById("godsTab").disabled=false;
+    document.getElementById("petsTab").disabled=false;
+    button.innerHTML="ASCEND<br>Reset Progress For Power";
+}
+
+function buyChemicalFertilizer(){
+    buyUpgrade(6000,()=>chemicalFertilizer=true);
+}
+
+function buyScarecrow(){
+    buyUpgrade(6500,()=>grassPerClick+=15);
+}
+
+function buyAIGrasser(){
+    buyUpgrade(7000,()=>{
+        autoTimers.push(setInterval(()=>addAutoGrass(15),1000));
+    });
+}
+
+function buyMagicFertilizer(){
+    buyUpgrade(7500,()=>magicFertilizer=true);
+}
+
+function buyWormFarm(){
+    buyUpgrade(8000,()=>wormFarm=true);
+}
+
+function buyGrassGenie(){
+    buyUpgrade(8500,()=>grassPerClick+=20);
+}
+
+function buyHumanoidGrasser(){
+    buyUpgrade(9000,()=>{
+        autoTimers.push(setInterval(()=>addAutoGrass(20),900));
+    });
+}
+
+function buyGrassGod(){
+    if(grass<upgradeCost(10000))return;
+    grass-=upgradeCost(10000);
+    grassGod=true;
+    updateGrass();
+}
+
+function buyTimeToGrass(){
+    if(grass<10000)return;
+    grass-=10000;
+    grassPerClick+=30;
+    updateGrass();
+}
+
+function ascend(){
+    if(!canAscend){
+        alert("Unlock Grass Farmer first!");
+        return;
+    }
+
+    autoTimers.forEach(clearInterval);
+    autoTimers=[];
+
+    let gemsEarned=Math.floor(grass/1000)-3;
+    if(gemsEarned<1)gemsEarned=1;
+    if(gemsEarned>10)gemsEarned=10;
+    if(ignisLevel>=1)gemsEarned++;
+
+    ascendedGems+=gemsEarned;
+    updategems();
+
+    grass=0;
+    grassPerClick=1;
+    critChance=0;
+    goldenWorms=false;
+    fertileGrass=false;
+    luckySeeds=false;
+    chemicalFertilizer=false;
+    magicFertilizer=false;
+    wormFarm=false;
+    grassGod=false;
+    clicks=0;
+
+    updateGrass();
+
+    document.querySelector(".categories button:nth-child(2)").disabled=false;
+    document.querySelector(".categories button:nth-child(3)").disabled=false;
+
+    alert("You Ascended! You gained "+gemsEarned+" Ascended Gem(s)! Your upgrades were reset and new areas unlocked!");
+}
+
+function showCategory(category){
+    document.getElementById("upgrades").style.display="none";
+    document.getElementById("gods").style.display="none";
+    document.getElementById("pets").style.display="none";
+    document.getElementById(category).style.display="block";
+}
+
+function updategems(){
+    document.getElementById("gemCount").innerHTML="Ascended Gems: "+ascendedGems;
+}
+
+function buyGaiaUpgrade(){
+    if(gaiaLevel>=4||ascendedGems<gaiaCost)return;
+    ascendedGems-=gaiaCost;
+    gaiaLevel++;
+    updateGaia();
+    updategems();
+}
+
+function updateGaia(){
+    switch(gaiaLevel){
+        case 1:gaiaMultiplier=1.05;gaiaCost=3;break;
+        case 2:gaiaMultiplier=1.10;gaiaCost=5;break;
+        case 3:gaiaMultiplier=1.15;gaiaCost=7;break;
+        case 4:gaiaMultiplier=1.20;gaiaCost=10;
+    }
+}
+
+function buyNeroUpgrade(){
+    if(neroLevel>=1||ascendedGems<neroCost)return;
+    ascendedGems-=neroCost;
+    neroLevel=1;
+    neroMultiplier=1.05;
+    updategems();
+}
+
+function addAutoGrass(amount){
+    const gain=amount*neroMultiplier*duosMultiplier;
+    grass+=gain;
+    showGrassGain(gain);
+    updateGrass();
+}
+
+function buyTempestUpgrade(){
+    if(tempestLevel>=1||ascendedGems<tempestCost)return;
+    ascendedGems-=tempestCost;
+    tempestLevel=1;
+    tempestBonus=1;
+    updategems();
+}
+
+function buyColossusUpgrade(){
+    if(colossusLevel>=1||ascendedGems<colossusCost)return;
+    ascendedGems-=colossusCost;
+    colossusLevel=1;
+    critChance+=.05;
+    updategems();
+}
+
+function buyIgnisUpgrade(){
+    if(ignisLevel>=1||ascendedGems<ignisCost)return;
+    ascendedGems-=ignisCost;
+    ignisLevel=1;
+    updategems();
+}
+
+function buyCostosUpgrade(){
+    if(costosLevel>=1||ascendedGems<costosCost)return;
+    ascendedGems-=costosCost;
+    costosLevel=1;
+    costosMultiplier=.95;
+    updateUpgradePrices();
+    updategems();
+}
+
+function upgradeCost(price){
+    return Math.ceil(price*costosMultiplier);
+}
+
+function updateUpgradePrices(){
+    document.getElementById("grassSeederPrice").textContent=upgradeCost(50);
+    document.getElementById("autoGrasserPrice").textContent=upgradeCost(100);
+    document.getElementById("betterSeedsPrice").textContent=upgradeCost(200);
+    document.getElementById("grasserV2Price").textContent=upgradeCost(400);
+    document.getElementById("collectorPrice").textContent=upgradeCost(800);
+    document.getElementById("rustyMowerPrice").textContent=upgradeCost(1000);
+    document.getElementById("wishFertilizerPrice").textContent=upgradeCost(2000);
+    document.getElementById("eliteSeederPrice").textContent=upgradeCost(2500);
+    document.getElementById("roboticGrasserPrice").textContent=upgradeCost(2800);
+    document.getElementById("fertileGrassPrice").textContent=upgradeCost(3000);
+    document.getElementById("masterGrasserPrice").textContent=upgradeCost(3500);
+    document.getElementById("luckySeedsPrice").textContent=upgradeCost(4000);
+    document.getElementById("grassFarmerPrice").textContent=upgradeCost(5000);
+    document.getElementById("chemicalFertilizerPrice").textContent=upgradeCost(6000);
+    document.getElementById("scarecrowPrice").textContent=upgradeCost(6500);
+    document.getElementById("aiGrasserPrice").textContent=upgradeCost(7000);
+    document.getElementById("magicFertilizerPrice").textContent=upgradeCost(7500);
+    document.getElementById("wormFarmPrice").textContent=upgradeCost(8000);
+    document.getElementById("grassGeniePrice").textContent=upgradeCost(8500);
+    document.getElementById("humanoidGrasserPrice").textContent=upgradeCost(9000);
+    document.getElementById("grassGodPrice").textContent=upgradeCost(9500);
+    document.getElementById("timeToGrassPrice").textContent=upgradeCost(10000);
+}
+
+function buyDuosUpgrade(){
+    if(duosLevel>=1||ascendedGems<duosCost)return;
+    ascendedGems-=duosCost;
+    duosLevel=1;
+    duosMultiplier=1.03;
+    updategems();
+}
+
+function buyRiskisUpgrade(){
+    if(riskisLevel>=1)return;
+    if(ascendedGems>=riskisCost){
+        ascendedGems-=riskisCost;
+        riskisLevel=1;
+        riskisLuck=.10;
+        updategems();
+    }
+}
+
+function getluckChance(chance){
+    return chance+riskisLuck;
+}
+
+function buyLumosUpgrade(){
+    if(lumosLevel>=1||ascendedGems<lumosCost)return;
+
+    ascendedGems-=lumosCost;
+    lumosLevel=1;
+    lumosMultiplier=1.05;
+
+    if(gaiaLevel>=1)gaiaMultiplier*=lumosMultiplier;
+    if(neroLevel>=1)neroMultiplier*=lumosMultiplier;
+    if(tempestLevel>=1)tempestBonus+=1;
+    if(colossusLevel>=1)critChance*=lumosMultiplier;
+    if(ignisLevel>=1)ignisLevel=2;
+    if(costosLevel>=1)costosMultiplier=.90;
+    if(duosLevel>=1)duosMultiplier*=lumosMultiplier;
+    if(riskisLevel>=1)riskisLuck*=lumosMultiplier;
+
+    updateUpgradePrices();
+    updategems();
+}
+
+function showGrassGain(amount){
+    const number=document.createElement("div");
+    number.className="floatingGrass";
+    number.textContent="+"+formatNumber(amount);
+
+    const rect=grassImage.getBoundingClientRect();
+    const randomX=Math.random()*100-50;
+    const randomY=Math.random()*60-30;
+
+    number.style.left=rect.left+rect.width/2+randomX+"px";
+    number.style.top=rect.top+rect.height/2+randomY+"px";
+
+    document.body.appendChild(number);
+    setTimeout(()=>number.remove(),1000);
+}
+
+updateGrass();
+updategems();
+updateUpgradePrices();
