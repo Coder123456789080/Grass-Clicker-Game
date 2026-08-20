@@ -10,7 +10,7 @@ let magicFertilizer=false;
 let wormFarm=false;
 let grassGod=false;
 let canAscend=false;
-let ascendedGems=0;
+let ascendedGems=20;
 let autoTimers=[];
 let gaiaLevel=0,gaiaCost=1,gaiaMultiplier=1;
 let neroLevel=0,neroCost=1,neroMultiplier=1;
@@ -244,12 +244,51 @@ function buyGaiaUpgrade(){
 }
 
 function updateGaia(){
-    switch(gaiaLevel){
-        case 1:gaiaMultiplier=1.05;gaiaCost=3;break;
-        case 2:gaiaMultiplier=1.10;gaiaCost=5;break;
-        case 3:gaiaMultiplier=1.15;gaiaCost=7;break;
-        case 4:gaiaMultiplier=1.20;gaiaCost=10;
-    }
+   const levelText=document.getElementById("gaiaLevel");
+   const bonusText=document.getElementById("gaiaBonus");
+   const costText=document.getElementById("gaiaCost");
+
+   switch(gaiaLevel){
+    case 0:
+        gaiaMultiplier=1;
+        gaiaCost=1;
+        levelText.textContent="Level 0";
+        bonusText.textContent="Current Grass Bonus Per Click: 0";
+        costText.textContent="1 Gem";
+        break;
+
+    case 1:
+        gaiaMultiplier= 1.5;
+        gaiaCost=3;
+        levelText.textContent="Level 1";
+        bonusText.textContent="Current Grass Bonus Per Click: 50%";
+        costText.textContent="3 Gems";
+        break;
+
+    case 2:
+        gaiaMultiplier= 3;
+        gaiaCost=6;
+        levelText.textContent="Level 2";
+        bonusText.textContent="Current Grass Bonus Per Click: 300%";
+        costText.textcontent="6 Gems";
+        break;
+
+    case 3:
+        gaiaMultiplier= 6;
+        gaiaCost=10;
+        levelText.textContent="Level 3";
+        bonusText.textContent="Current Grass Bonus Per Click: 600%";
+        costText.textContent="10 Gems";
+        break;
+
+    case 4:
+        gaiaMultiplier= 12;
+        gaiaCost=0;
+        levelText.textContent="Level 4";
+        bonusText.textContent="Current Grass Bonus Per Click: 1200%";
+        costText.textContent="MAX LEVEL"
+        break;
+   }
 }
 
 function buyNeroUpgrade(){
@@ -389,3 +428,4 @@ function showGrassGain(amount){
 updateGrass();
 updategems();
 updateUpgradePrices();
+updateGaia();
