@@ -72,7 +72,9 @@ function buyUpgrade(cost,action){
 }
 
 function buyClickUpgrade(){
-    buyUpgrade(50,()=>grassPerClick++);
+    buyUpgrade(50,()=>{
+        addClickPower(1);
+    });
 }
 
 function buyAutoUpgrade(){
@@ -82,7 +84,9 @@ function buyAutoUpgrade(){
 }
 
 function buyBetterSeeds(){
-    buyUpgrade(200,()=>grassPerClick+=2);
+    buyUpgrade(200,()=>{
+        addClickPower(2);
+    });
 }
 
 function buyGrasserV2(){
@@ -92,7 +96,9 @@ function buyGrasserV2(){
 }
 
 function buyCollector(){
-    buyUpgrade(800,()=>grassPerClick+=3);
+    buyUpgrade(800,()=>{
+        addClickPower(3);
+    })
 }
 
 function buyRustyMower(){
@@ -104,7 +110,9 @@ function buyWishFertilizer(){
 }
 
 function buyEliteSeeder(){
-    buyUpgrade(2500,()=>grassPerClick+=5);
+    buyUpgrade(2500,()=>{
+        addClickPower(5);
+    });
 }
 
 function buyRoboticGrasser(){
@@ -118,7 +126,9 @@ function buyFertileGrass(){
 }
 
 function buyMasterGrasser(){
-    buyUpgrade(3500,()=>grassPerClick+=10);
+    buyUpgrade(3500,()=>{
+        addClickPower(10);
+    })
 }
 
 function buyLuckySeeds(){
@@ -146,7 +156,9 @@ function buyChemicalFertilizer(){
 }
 
 function buyScarecrow(){
-    buyUpgrade(6500,()=>grassPerClick+=15);
+    buyUpgrade(6500,()=>{
+        addClickPower(15);
+    })
 }
 
 function buyAIGrasser(){
@@ -164,7 +176,9 @@ function buyWormFarm(){
 }
 
 function buyGrassGenie(){
-    buyUpgrade(8500,()=>grassPerClick+=20);
+    buyUpgrade(8500,()=>{
+        addClickPower(20);
+    })
 }
 
 function buyHumanoidGrasser(){
@@ -181,9 +195,9 @@ function buyGrassGod(){
 }
 
 function buyTimeToGrass(){
-    if(grass<10000)return;
-    grass-=10000;
-    grassPerClick+=30;
+    if(grass<upgradeCost(10000))return;
+    grass-=upgradeCost(10000);
+    addClickPower(30);
     updateGrass();
 }
 
@@ -353,11 +367,62 @@ function updateNero(){
             }
 }
 function buyTempestUpgrade(){
-    if(tempestLevel>=1||ascendedGems<tempestCost)return;
+    if(tempestLevel>=4||ascendedGems<tempestCost)return;
     ascendedGems-=tempestCost;
-    tempestLevel=1;
-    tempestBonus=1;
+    tempestLevel++;
+    updateTempest();
     updategems();
+}
+
+function updateTempest(){
+    
+    const levelText=document.getElementById("tempestLevel");
+    const bonusText=document.getElementById("tempestBonus");
+    const costText=document.getElementById("tempestCost");
+    switch(tempestLevel){
+        case 0:
+            tempestBonus=0;
+            tempestCost=1;
+            levelText.textContent="Level 0";
+            bonusText.textContent="Extra Per Click From Upgrades: +0";
+            costText.textContent="1 Gem";
+            break;
+
+        case 1:
+            tempestBonus=1;
+            tempestCost=3;
+            levelText.textContent="Level 1";
+            bonusText.textContent="Extra Per Click From Upgrades: +1";
+            costText.textContent="3 Gems";
+            break;
+
+        case 2:
+            tempestBonus=3;
+            tempestCost=6;
+            levelText.textContent="Level 2";
+            bonusText.textContent="Extra Per Click From Upgrades: +3";
+            costText.textContent="6 Gems";
+            break;
+
+        case 3:
+            tempestBonus=6;
+            tempestCost=10;
+            levelText.textContent="Level 3";
+            bonusText.textContent="Extra Per Click From Upgrades: +6";
+            costText.textContent="10 Gems";
+            break;
+
+        case 4:
+            tempestBonus=12;
+            tempestCost=0
+            levelText.textContent="Level 4";
+            bonusText.textContent="Extra Per Click From Upgrades: +12";
+            costText.textContent="MAX LEVEL";
+            break;      
+  }
+}
+function addClickPower(amount){
+    grassPerClick+=amount;
 }
 
 function buyColossusUpgrade(){
@@ -431,7 +496,7 @@ function buyRiskisUpgrade(){
     }
 }
 
-function getluckChance(chance){
+function getLuckChance(chance){
     return chance+riskisLuck;
 }
 
@@ -476,3 +541,4 @@ updategems();
 updateUpgradePrices();
 updateGaia();
 updateNero();
+updateTempest();
