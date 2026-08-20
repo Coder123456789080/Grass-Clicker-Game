@@ -1,4 +1,4 @@
-let grass=0;
+let grass=10000;
 let grassPerClick=1;
 let clicks=0;
 let critChance=0;
@@ -270,7 +270,7 @@ function updateGaia(){
         gaiaCost=6;
         levelText.textContent="Level 2";
         bonusText.textContent="Current Grass Bonus Per Click: 300%";
-        costText.textcontent="6 Gems";
+        costText.textContent="6 Gems";
         break;
 
     case 3:
@@ -292,10 +292,10 @@ function updateGaia(){
 }
 
 function buyNeroUpgrade(){
-    if(neroLevel>=1||ascendedGems<neroCost)return;
+    if(neroLevel>=4||ascendedGems<neroCost)return;
     ascendedGems-=neroCost;
-    neroLevel=1;
-    neroMultiplier=1.05;
+    neroLevel++;
+    updateNero();
     updategems();
 }
 
@@ -305,7 +305,53 @@ function addAutoGrass(amount){
     showGrassGain(gain);
     updateGrass();
 }
+function updateNero(){
 
+    const levelText=document.getElementById("neroLevel");
+    const bonusText=document.getElementById("neroBonus");
+    const costText=document.getElementById("neroCost");
+    switch(neroLevel){
+        case 0:
+            neroMultiplier=1;
+            neroCost=1;
+            levelText.textContent="Level 0";
+            bonusText.textContent="Current Grass Bonus Per Auto Click: 0";
+            costText.textContent="1 Gem";
+            break;
+
+        case 1:
+            neroMultiplier=1.25;
+            neroCost=3;
+            levelText.textContent="Level 1";
+            bonusText.textContent="Current Grass Bonus Per Auto Click 25%";
+            costText.textContent="3 Gems";
+            break;
+        
+        case 2:
+            neroMultiplier=1.5;
+            neroCost=6;
+            levelText.textContent="Level 2";
+            bonusText.textContent="Current Grass Bonus Per Auto Click 50%";
+            costText.textContent="6 Gems";
+            break;
+
+         case 3:
+            neroMultiplier=2.5;
+            neroCost=10;
+            levelText.textContent="Level 3";
+            bonusText.textContent="Current Grass Bonus Per Auto Click 250%";
+            costText.textContent="10 Gems";
+            break;
+
+         case 4:
+            neroMultiplier=4;
+            neroCost=0;
+            levelText.textContent="Level 4";
+            bonusText.textContent="Current Grass Bonus Per Auto Click 400%";
+            costText.textContent="MAX LEVEL"
+            break;
+            }
+}
 function buyTempestUpgrade(){
     if(tempestLevel>=1||ascendedGems<tempestCost)return;
     ascendedGems-=tempestCost;
@@ -429,3 +475,4 @@ updateGrass();
 updategems();
 updateUpgradePrices();
 updateGaia();
+updateNero();
