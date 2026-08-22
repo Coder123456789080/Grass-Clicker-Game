@@ -16,7 +16,7 @@ let gaiaLevel=0,gaiaCost=1,gaiaMultiplier=1;
 let neroLevel=0,neroCost=1,neroMultiplier=1;
 let tempestLevel=0,tempestCost=1,tempestBonus=0;
 let colossusLevel=0,colossusCost=1,colossusMultiplier=1;
-let ignisLevel=0,ignisCost=1;
+let ignisLevel=0,ignisCost=1,ignisMultiplier=1;
 let costosLevel=0,costosCost=1,costosMultiplier=1;
 let duosLevel=0,duosCost=1,duosMultiplier=1;
 let riskisLevel=0,riskisCost=1,riskisLuck=0;
@@ -215,7 +215,7 @@ function ascend(){
     let gemsEarned=Math.floor(grass/1000)-3;
     if(gemsEarned<1)gemsEarned=1;
     if(gemsEarned>10)gemsEarned=10;
-    if(ignisLevel>=1)gemsEarned++;
+    gemsEarned+=ignisBonus;
 
     ascendedGems+=gemsEarned;
     updategems();
@@ -479,10 +479,54 @@ function updateColossus(){
 }
 
 function buyIgnisUpgrade(){
-    if(ignisLevel>=1||ascendedGems<ignisCost)return;
+    if(ignisLevel>=4||ascendedGems<ignisCost)return;
     ascendedGems-=ignisCost;
-    ignisLevel=1;
+    ignisLevel++;
+    updateIgnis();
     updategems();
+}
+function updateIgnis(){
+
+    const levelText=document.getElementById("ignisLevel");
+    const bonusText=document.getElementById("ignisBonus");
+    const costText=document.getElementById("ignisCost");
+    switch(ignisLevel){
+        case 0:
+            ignisBonus=0;
+            ignisCost=1;
+            levelText.textContent="Level 0";
+            bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +0";
+            costText.textContent="1 Gems";
+            break;
+        case 1:
+            ignisBonus=1;
+            ignisCost=3;
+            levelText.textContent="Level 1";
+            bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +1";
+            costText.textContent="3 Gems";
+            break;
+        case 2:
+            ignisBonus=2;
+            ignisCost=6;
+            levelText.textContent="Level 2";
+            bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +2";
+            costText.textContent="6 Gems";
+            break;
+        case 3:
+            ignisBonus=3;
+            ignisCost=10;
+            levelText.textContent="Level 3";
+            bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +3";
+            costText.textContent="10 Gems";
+            break;
+        case 4:
+            ignisBonus=4;
+            ignisCost=10;
+            levelText.textContent="Level 4";
+            bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +4";
+            costText.textContent="10 Gems";
+            break;
+    }
 }
 
 function buyCostosUpgrade(){
@@ -591,3 +635,4 @@ updateGaia();
 updateNero();
 updateTempest();
 updateColossus();
+updateIgnis();
