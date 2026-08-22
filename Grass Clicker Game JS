@@ -15,7 +15,7 @@ let autoTimers=[];
 let gaiaLevel=0,gaiaCost=1,gaiaMultiplier=1;
 let neroLevel=0,neroCost=1,neroMultiplier=1;
 let tempestLevel=0,tempestCost=1,tempestBonus=0;
-let colossusLevel=0,colossusCost=1;
+let colossusLevel=0,colossusCost=1,colossusMultiplier=1;
 let ignisLevel=0,ignisCost=1;
 let costosLevel=0,costosCost=1,costosMultiplier=1;
 let duosLevel=0,duosCost=1,duosMultiplier=1;
@@ -48,7 +48,7 @@ function incrementGrass(){
     if(grassGod&&clicks%3===0)gain+=50;
     if(luckySeeds&&clicks%100===0&&Math.random()<getLuckChance(.25))gain+=1000;
     if(wormFarm&&clicks%10===0&&Math.random()<getLuckChance(.20))gain+=1000;
-    if(magicFertilizer&&Math.random()<getLuckChance(.10))gain*=2;
+    if(magicFertilizer&&Math.random()<getLuckChance(getMagicFertilizerChance()))gain*=2;
 
     grass+=gain;
     showGrassGain(gain);
@@ -102,7 +102,9 @@ function buyCollector(){
 }
 
 function buyRustyMower(){
-    buyUpgrade(1000,()=>critChance=.1);
+    buyUpgrade(1000,()=>{
+        critChance=.10*colossusMultiplier;
+    });
 }
 
 function buyWishFertilizer(){
@@ -428,9 +430,52 @@ function addClickPower(amount){
 function buyColossusUpgrade(){
     if(colossusLevel>=1||ascendedGems<colossusCost)return;
     ascendedGems-=colossusCost;
-    colossusLevel=1;
-    critChance+=.05;
-    updategems();
+    colossusLevel++;
+    updateColossus();
+    updateGems();
+}
+function updateColossus(){
+
+    const levelText=document.getElementById("colossusLevel");
+    const bonusText=document.getElementById("colossusBonus");
+    const costText=document.getElementById("colossusCost");
+    switch(colossusLevel){
+        case 0:
+            colossusBonus=1;
+            colossusCost=1;
+            levelText.textContent="Level 0";
+            bonusText.textContent="Current Special Luck Bonuses: 0%";
+            costText.textContent="1 Gem";
+            break;
+        case 1:
+            colossusBonus=1.10;
+            colossusCost=3;
+            levelText.textContent="Level 1";
+            bonusText.textContent="Current Special Luck Bonuses: 10%";
+            costText.textContent="3 Gems";
+            break;
+        case 2:
+            colossusBonus=1.20;
+            colossusCost=6;
+            levelText.textContent="Level 2";
+            bonusText.textContent="Current Special Luck Bonuses: 20%";
+            costText.textContent="6 Gems";
+            break;
+        case 3:
+            colossusBonus=1.35;
+            colossusCost=10;
+            levelText.textContent="Level 3";
+            bonusText.textContent="Current Special Luck Bonuses: 35%";
+            costText.textContent="10 Gems";
+            break;
+        case 4:
+            colossusBonus=1.50;
+            colossusCost=0
+            levelText.textContent="Level 4";
+            bonusText.textContent="Current Special Luck Bonuses: 50%";
+            costText.textContent="MAX LEVEL";
+            break; 
+    }
 }
 
 function buyIgnisUpgrade(){
@@ -499,6 +544,9 @@ function buyRiskisUpgrade(){
 function getLuckChance(chance){
     return chance+riskisLuck;
 }
+function getMagicFertilizerChance(){
+    return .10*magicFertilizerMultiplier;
+}
 
 function buyLumosUpgrade(){
     if(lumosLevel>=1||ascendedGems<lumosCost)return;
@@ -542,3 +590,4 @@ updateUpgradePrices();
 updateGaia();
 updateNero();
 updateTempest();
+updateColossus();
