@@ -15,8 +15,8 @@ let autoTimers=[];
 let gaiaLevel=0,gaiaCost=1,gaiaMultiplier=1;
 let neroLevel=0,neroCost=1,neroMultiplier=1;
 let tempestLevel=0,tempestCost=1,tempestBonus=0;
-let colossusLevel=0,colossusCost=1,colossusMultiplier=1;
-let ignisLevel=0,ignisCost=1,ignisMultiplier=1;
+let colossusLevel=0,colossusCost=1,colossusBonus=1;
+let ignisLevel=0,ignisCost=1,ignisBonus=1;
 let costosLevel=0,costosCost=1,costosMultiplier=1;
 let duosLevel=0,duosCost=1,duosMultiplier=1;
 let riskisLevel=0,riskisCost=1,riskisLuck=0;
@@ -103,7 +103,7 @@ function buyCollector(){
 
 function buyRustyMower(){
     buyUpgrade(1000,()=>{
-        critChance=.10*colossusMultiplier;
+        critChance=.10*colossusBonus;
     });
 }
 
@@ -428,7 +428,7 @@ function addClickPower(amount){
 }
 
 function buyColossusUpgrade(){
-    if(colossusLevel>=1||ascendedGems<colossusCost)return;
+    if(colossusLevel>=4||ascendedGems<colossusCost)return;
     ascendedGems-=colossusCost;
     colossusLevel++;
     updateColossus();
@@ -496,7 +496,7 @@ function updateIgnis(){
             ignisCost=1;
             levelText.textContent="Level 0";
             bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +0";
-            costText.textContent="1 Gems";
+            costText.textContent="1 Gem";
             break;
         case 1:
             ignisBonus=1;
@@ -521,21 +521,64 @@ function updateIgnis(){
             break;
         case 4:
             ignisBonus=4;
-            ignisCost=10;
+            ignisCost=0;
             levelText.textContent="Level 4";
             bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +4";
-            costText.textContent="10 Gems";
+            costText.textContent="MAX LEVEL";
             break;
     }
 }
 
 function buyCostosUpgrade(){
-    if(costosLevel>=1||ascendedGems<costosCost)return;
+    if(costosLevel>=4||ascendedGems<costosCost)return;
     ascendedGems-=costosCost;
-    costosLevel=1;
-    costosMultiplier=.95;
+    costosLevel++;
+    updateCostos();
     updateUpgradePrices();
     updategems();
+}
+function updateCostos(){
+
+    const levelText=document.getElementById("costosLevel");
+    const bonusText=document.getElementById("costosBonus");
+    const costText=document.getElementById("costosCost");
+    switch(costosLevel){
+        case 0:
+            costosMultiplier=1;
+            costosCost=1;
+            levelText.textContent="Level 0";
+            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 0";
+            costText.textContent="1 Gem";
+            break;
+        case 1:
+            costosMultiplier=.90;
+            costosCost=3;
+            levelText.textContent="Level 1";
+            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 10%";
+            costText.textContent="3 Gems";
+            break;
+        case 2:
+            costosMultiplier=.80;
+            costosCost=6;
+            levelText.textContent="Level 2";
+            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 20%";
+            costText.textContent="6 Gems";
+            break;
+        case 3:
+            costosMultiplier=.70;
+            costosCost=10;
+            levelText.textContent="Level 3";
+            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 30%";
+            costText.textContent="10 Gems";
+            break;
+        case 4:
+            costosMultiplier=.60;
+            costosCost=0;
+            levelText.textContent="Level 4";
+            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 40%";
+            costText.textContent="MAX LEVEL";
+            break;
+    }
 }
 
 function upgradeCost(price){
@@ -603,7 +646,7 @@ function buyLumosUpgrade(){
     if(neroLevel>=1)neroMultiplier*=lumosMultiplier;
     if(tempestLevel>=1)tempestBonus+=1;
     if(colossusLevel>=1)critChance*=lumosMultiplier;
-    if(ignisLevel>=1)ignisLevel=2;
+    if(ignisLevel>=1)ignisBonus+=1;
     if(costosLevel>=1)costosMultiplier=.90;
     if(duosLevel>=1)duosMultiplier*=lumosMultiplier;
     if(riskisLevel>=1)riskisLuck*=lumosMultiplier;
@@ -636,3 +679,4 @@ updateNero();
 updateTempest();
 updateColossus();
 updateIgnis();
+updateCostos();
