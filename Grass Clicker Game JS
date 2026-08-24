@@ -663,12 +663,53 @@ function updateDuos(){
 }
 
 function buyRiskisUpgrade(){
-    if(riskisLevel>=1)return;
-    if(ascendedGems>=riskisCost){
+    if(riskisLevel>=4||ascendedGems<riskisCost)return;
         ascendedGems-=riskisCost;
-        riskisLevel=1;
-        riskisLuck=.10;
+        riskisLevel++;
+        updateRiskis();
         updategems();
+    }
+function updateRiskis(){
+
+    const levelText=document.getElementById("riskisLevel");
+    const bonusText=document.getElementById("riskisBonus");
+    const costText=document.getElementById("riskisCost");
+    switch(riskisLevel){
+        case 0:
+            riskisLuck=0;
+            riskisCost=1;
+            levelText.textContent="Level 0";
+            bonusText.textContent="Current Luck Boost: 0%";
+            costText.textContent="1 Gem";
+            break;
+        case 1:
+            riskisLuck=.5;
+            riskisCost=3;
+            levelText.textContent="Level 1";
+            bonusText.textContent="Current Luck Boost: 5%";
+            costText.textContent="3 Gems";
+            break;
+        case 2:
+            riskisLuck=.10;
+            riskisCost=6;
+            levelText.textContent="Level 2";
+            bonusText.textContent="Current Luck Boost: 10%";
+            costText.textContent="6 Gems";
+            break;
+        case 3:
+            riskisLuck=.20;
+            riskisCost=10;
+            levelText.textContent="Level 3";
+            bonusText.textContent="Current Luck Boost: 20%";
+            costText.textContent="10 Gems";
+            break;
+        case 4:
+            riskisLuck=.35;
+            riskisCost=0;
+            levelText.textContent="Level 4";
+            bonusText.textContent="Current Luck Boost: 35%";
+            costText.textContent="MAX LEVEL";
+            break;
     }
 }
 
@@ -725,3 +766,4 @@ updateColossus();
 updateIgnis();
 updateCostos();
 updateDuos();
+updateRiskis();
