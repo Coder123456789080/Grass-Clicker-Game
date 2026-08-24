@@ -269,7 +269,7 @@ function updateGaia(){
         gaiaMultiplier=1;
         gaiaCost=1;
         levelText.textContent="Level 0";
-        bonusText.textContent="Current Grass Bonus Per Click: 0";
+        bonusText.textContent="Current Grass Bonus Per Click: 0%";
         costText.textContent="1 Gem";
         break;
 
@@ -331,7 +331,7 @@ function updateNero(){
             neroMultiplier=1;
             neroCost=1;
             levelText.textContent="Level 0";
-            bonusText.textContent="Current Grass Bonus Per Auto Click: 0";
+            bonusText.textContent="Current Grass Bonus Per Auto Click: 0%";
             costText.textContent="1 Gem";
             break;
 
@@ -339,7 +339,7 @@ function updateNero(){
             neroMultiplier=1.25;
             neroCost=3;
             levelText.textContent="Level 1";
-            bonusText.textContent="Current Grass Bonus Per Auto Click 25%";
+            bonusText.textContent="Current Grass Bonus Per Auto Click: 25%";
             costText.textContent="3 Gems";
             break;
         
@@ -347,7 +347,7 @@ function updateNero(){
             neroMultiplier=1.5;
             neroCost=6;
             levelText.textContent="Level 2";
-            bonusText.textContent="Current Grass Bonus Per Auto Click 50%";
+            bonusText.textContent="Current Grass Bonus Per Auto Click: 50%";
             costText.textContent="6 Gems";
             break;
 
@@ -355,7 +355,7 @@ function updateNero(){
             neroMultiplier=2.5;
             neroCost=10;
             levelText.textContent="Level 3";
-            bonusText.textContent="Current Grass Bonus Per Auto Click 250%";
+            bonusText.textContent="Current Grass Bonus Per Auto Click: 250%";
             costText.textContent="10 Gems";
             break;
 
@@ -363,7 +363,7 @@ function updateNero(){
             neroMultiplier=4;
             neroCost=0;
             levelText.textContent="Level 4";
-            bonusText.textContent="Current Grass Bonus Per Auto Click 400%";
+            bonusText.textContent="Current Grass Bonus Per Auto Click: 400%";
             costText.textContent="MAX LEVEL"
             break;
             }
@@ -611,11 +611,55 @@ function updateUpgradePrices(){
 }
 
 function buyDuosUpgrade(){
-    if(duosLevel>=1||ascendedGems<duosCost)return;
+    if(duosLevel>=4||ascendedGems<duosCost)return;
     ascendedGems-=duosCost;
-    duosLevel=1;
-    duosMultiplier=1.03;
+    duosLevel++;
+    updateDuos();
     updategems();
+}
+function updateDuos(){
+
+    const levelText=document.getElementById("duosLevel");
+    const bonusText=document.getElementById("dousBonus");
+    const costText=document.getElementById("duosCost");
+    switch(duosLevel){
+        case 0:
+            duosMultiplier=1;
+            duosCost=1;
+            levelText.textContent="Level 0";
+            bonusText.textContent="Current Auto Grass And Grass Per Click Boost: 0%";
+            costText.textContent="1 gems";
+            break;
+        case 1:
+            duosMultiplier=1.3
+            duosCost=3;
+            levelText.textContent="Level 1";
+            bonusText.textContent="Current Auto Grass And Grass Per Click Boost: 30%";
+            costText.textContent="3 Gems";
+            break;
+        case 2:
+            duosMultiplier=2
+            duosCost=6;
+            levelText.textContent="Level 2";
+            bonusText.textContent="Current Auto Grass And Per Click Boost: 200%";
+            costText.textContent="6 Gems";
+            break;
+        case 3:
+            duosMultiplier=4
+            duosCost=12;
+            levelText.textContent="Level 3";
+            bonusText.textContent="Current Auto Grass And Grass Per Click Boost: 400%";
+            costText.textContent="12 Gems";
+            break;
+        case 4:
+            duosMultiplier=6;
+            duosCost=0;
+            levelText.textContent="Level 4";
+            bonusText.textContent="Current Auto Grass And Grass Per Click Boost: 600%";
+            costText.textContent="MAX LEVEL";
+            break;
+
+    }
 }
 
 function buyRiskisUpgrade(){
@@ -680,3 +724,4 @@ updateTempest();
 updateColossus();
 updateIgnis();
 updateCostos();
+updateDuos();
