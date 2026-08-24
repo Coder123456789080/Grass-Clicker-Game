@@ -620,7 +620,7 @@ function buyDuosUpgrade(){
 function updateDuos(){
 
     const levelText=document.getElementById("duosLevel");
-    const bonusText=document.getElementById("dousBonus");
+    const bonusText=document.getElementById("duosBonus");
     const costText=document.getElementById("duosCost");
     switch(duosLevel){
         case 0:
@@ -646,7 +646,7 @@ function updateDuos(){
             break;
         case 3:
             duosMultiplier=4
-            duosCost=12;
+            duosCost=10;
             levelText.textContent="Level 3";
             bonusText.textContent="Current Auto Grass And Grass Per Click Boost: 400%";
             costText.textContent="12 Gems";
