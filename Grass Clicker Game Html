@@ -59,7 +59,7 @@
 <h3>Gaia</h3>
 <p class="godTitle">God of Nature</p>
 <p id="gaiaLevel">Level 0/4</p>
-<p>Grass Per Click +5%</p>
+<p id="gaiaBonus">Grass Per Click +5%</p>
 <div class="godCost">
 <img src="Images/Green Gem png.png" class="godGem">
 <span id="gaiaCost">1 Gem</span>
@@ -70,7 +70,7 @@
 <h3>Nero</h3>
 <p class="godTitle">God of Growth</p>
 <p id="neroLevel">Level 0/4</p>
-<p>Automatic Grass +5%</p>
+<p id="neroBonus">Current Auto Grass Bonus: 0%</p>
 <div class="godCost">
 <img src="Images/Green Gem png.png" class="godGem">
 <span id="neroCost">1 Gem</span>
@@ -81,7 +81,7 @@
 <h3>Tempest</h3>
 <p class="godTitle">God of Storms</p>
 <p id="tempestLevel">Level 0/4</p>
-<p>Grass upgrades give +1 more</p>
+<p id="tempestBonus">Extra Per Click From Upgrades: +0</p>
 <div class="godCost">
 <img src="Images/Green Gem png.png" class="godGem">
 <span id="tempestCost">1 Gem</span>
@@ -92,7 +92,7 @@
 <h3>Colossus</h3>
 <p class="godTitle">God of Giants</p>
 <p id="colossusLevel">Level 0/4</p>
-<p>+5% Critical Click Chance</p>
+<p id="colossusBonus">Special Luck Bonuses</p>
 <div class="godCost">
 <img src="Images/Green Gem png.png" class="godGem">
 <span id="colossusCost">1 Gem</span>
@@ -103,7 +103,7 @@
 <h3>Ignis</h3>
 <p class="godTitle">God of Fire</p>
 <p id="ignisLevel">Level 0/4</p>
-<p>+1 Ascended Gem Every Ascension</p>
+<p id="ignisBonus">Ascended Gem Bonus Per Ascension</p>
 <div class="godCost">
 <img src="Images/Green Gem png.png" class="godGem">
 <span id="ignisCost">1 Gem</span>
@@ -114,7 +114,7 @@
 <h3>Costos</h3>
 <p class="godTitle">God of Wealth</p>
 <p id="costosLevel">Level 0/4</p>
-<p>Upgrade Prices -5%</p>
+<p id="costosBonus">Reduces Upgrade Costs</p>
 <div class="godCost">
 <img src="Images/Green Gem png.png" class="godGem">
 <span id="costosCost">1 Gem</span>
@@ -125,7 +125,7 @@
 <h3>Duos</h3>
 <p class="godTitle">God of Balance</p>
 <p id="duosLevel">Level 0/4</p>
-<p>Grass Per Click +3%<br>Auto Grass +3%</p>
+<p id="duosBonus">Balances Grass Growth</p>
 <div class="godCost">
 <img src="Images/Green Gem png.png" class="godGem">
 <span id="duosCost">1 Gem</span>
@@ -136,7 +136,7 @@
 <h3>Riskis</h3>
 <p class="godTitle">God of Luck</p>
 <p id="riskisLevel">Level 0/4</p>
-<p>Luck Boost +10%</p>
+<p id="riskisBonus">Luck Boost +0%</p>
 <div class="godCost">
 <img src="Images/Green Gem png.png" class="godGem">
 <span id="riskisCost">1 Gem</span>
@@ -147,13 +147,12 @@
 <h3>Lumos</h3>
 <p class="godTitle">God of Light</p>
 <p id="lumosLevel">Level 0/4</p>
-<p>All God Bonuses +5%</p>
+<p id="lumosBonus">Current God Bonus Boost: 0%</p>
 <div class="godCost">
 <img src="Images/Green Gem png.png" class="godGem">
 <span id="lumosCost">1 Gem</span>
 </div>
 <button class="buyGod" onclick="buyLumosUpgrade()">Upgrade</button>
-</div>
 </div>
 <div id="pets" style="display:none">
 <h3>Pets</h3>
