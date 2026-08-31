@@ -259,13 +259,14 @@ function buyPhaseUpgrade(phase,index){
     }
     if(index<0||index>=10)return;
     if(index>0&&upgrades[index-1]===0)return;
+    if(upgrades[index]>=10)return;
     let cost=Math.ceil(costs[index]*Math.pow(1.5,upgrades[index]));
     if(grass<cost)return;
     grass-=cost;
     upgrades[index]++;
+    updatePhaseEffects();
     applyPhaseUpgradeEffect(phase,index);
     updateGrass();
-    updatePhaseUpgrades();
 }
 function applyPhaseUpgradeEffect(phase,index){
     let level;
@@ -324,19 +325,18 @@ function buyPhase3Upgrade(index){
 
 function updatePhaseUpgrades(){
     for(let i=0;i<10;i++){
-        const phase1Button=document.getElementById("phase1Level"+i);
-        const phase2Button=document.getElementById("phase2Level"+i);
-        const phase3Button=document.getElementById("phase3Level"+i);
-        if(phase1Level)phase1Level.textContent="Level "+phase1Upgrades[i];
-        if(phase2Level)phase2Level.textContent="Level "+phase2Upgrades[i];
-        if(phase3Level)phase3Level.textContent="Level "+phase2Upgrades[i];
+        const phase1Level=document.getElementById("phase1Level"+i);
+        const phase2Level=document.getElementById("phase2Level"+i);
+        const phase3Level=document.getElementById("phase3Level"+i);
+        if(phase1Level)phase1Level.textContent="Level "+phase1Upgrades[i]+"/10";
+        if(phase2Level)phase2Level.textContent="Level "+phase2Upgrades[i]+"/10";
+        if(phase3Level)phase3Level.textContent="Level "+phase3Upgrades[i]+"/10";
         const phase1Cost=document.getElementById("phase1Cost"+i);
         const phase2Cost=document.getElementById("phase2Cost"+i);
         const phase3Cost=document.getElementById("phase3Cost"+i);
-        if(phase1Cost)phase1Cost.textContent=Math.ceil(phase1Costs[i]*Math.pow(1.5,phase1Upgrades[i]));
-        if(phase2Cost)phase2Cost.textContent=Math.ceil(phase2Costs[i]*Math.pow(1.5,phase2Upgrades[i]));
-        if(phase3Cost)phase3Cost.textContent=Math.ceil(phase3Costs[i]*Math.pow(1.5,phase3Upgrades[i]));
-        
+        if(phase1Cost)phase1Cost.textContent=phase1Upgrades[i]>=10?"MAX LEVEL":Math.ceil(phase1Costs[i]*Math.pow(1.5,phase1Upgrades[i]))+" Seeds";
+        if(phase2Cost)phase2Cost.textContent=phase2Upgrades[i]>=10?"MAX LEVEL":Math.ceil(phase2Costs[i]*Math.pow(1.5,phase2Upgrades[i]))+" Seeds";
+        if(phase3Cost)phase3Cost.textContent=phase3Upgrades[i]>=10?"MAX LEVEL":Math.ceil(phase3Costs[i]*Math.pow(1.5,phase3Upgrades[i]))+" Seeds";
     }
 }
 
@@ -347,7 +347,7 @@ function unlockPhase(phase){
     }
     if(phase===2){
         phase2Unlocked=true;
-        curretPhase=2;
+        currentPhase=2;
     }
     if(phase===3){
         phase3Unlocked=true;
@@ -393,14 +393,12 @@ function ascend(){
     ascendedGems+=gemsEarned;
     updategems();
     if(!phase1Unlocked){
-        unlockPhase(1);
-    }
-    else if(phase1Unlocked&&!phase2Unlocked){
-        unlockPhase(2);
-    }
-    else if(phase2Unlocked&&!phase3Unlocked){
-        unlockPhase(3);
-    }
+    unlockPhase(1);} 
+    else if(phase1Unlocked&&!phase2Unlocked&&phase1Upgrades[9]>=10){
+    unlockPhase(2);}
+    else if(phase2Unlocked&&!phase3Unlocked&&phase2Upgrades[9]>=10){
+    unlockPhase(3);
+}
 
     grass=0;
     grassPerClick=1;
@@ -999,7 +997,7 @@ function createPhase(phase){
         name.textContent=names[i];
         const level=document.createElement("p");
         level.id="phase"+phase+"Level"+i;
-        cost.textContent="Level 0/10";
+        level.textContent="Level 0/10";
         const cost=document.createElement("p");
         cost.id="phase"+phase+"Cost"+i;
         cost.textContent=costs[i]+" Seeds";
@@ -1019,32 +1017,26 @@ function createPhase(phase){
 
     }
 }
-function buyPhaseUpgrades(phase,index){
-    const upgrades=phase===1?phase1Upgrades:phase===2?phase2Upgrades:phase3Upgrades;
-    const costs=getPhaseCosts(phase);
-    if(upgrades[index]>=10)return;
-    const cost=upgradeCost(costs[index]);
-    if(grass<cost)return;
-    grass-=cost;
-    upgrades[index]++;
-    updatePhaseUpgrade(phase,index);
-    updateGrass();
-}
 function updatePhaseUpgrade(phase,index){
     const upgrades=phase===1?phase1Upgrades:phase===2?phase2Upgrades:phase3Upgrades;
     const costs=getPhaseCosts(phase);
+    const effects=phase===1?phase1Effects:phase===2?phase2Effects:phase3Effects;
     const level=upgrades[index];
-    document.getElementById("phase"+phase+"Level"+index).textContent="Level "+level+"/10";
-    if(level>=10){
-        document.getElementById("phase"+phase+"Cost"+index).textContent="MAX LEVEL";
-        document.getElementById("phase"+phase+"Button"+index).textContent="MAX";
-        document.getElementById("phase"+phase+"Button"+index).disabled=true;
+    const levelText=document.getElementById("phase"+phase+"Level"+index);
+    const costText=document.getElementById("phase"+phase+"Cost"+index);
+    const effectText=document.getElementById("phase"+phase+"Effect"+index);
+    const button=document.getElementById("phase"+phase+"Button"+index);
+    if(levelText)levelText.textContent="Level "+level+"/10";
+    if(costText)costText.textContent=level>=10?"MAX LEVEL":Math.ceil(costs[index]*Math.pow(1.5,level))+" Seeds";
+    if(effectText){
+        if(phase===1)effectText.textContent="+"+formatNumber(effects[index]*level*100)+"% Bonus";
+        if(phase===2)effectText.textContent="+"+formatNumber(effects[index]*level)+"x Bonus";
+        if(phase===3)effectText.textContent="+"+formatNumber(effects[index]*level)+"x Bonus";
     }
-    else{
-        document.getElementById("phase"+phase+"Cost"+index).textContent=upgradeCost(costs[index])+" Seeds";
-        document.getElementById("phase"+phase+"Button"+index).textContent="BUY";
+    if(button){
+        button.textContent=level>=10?"MAX":"BUY";
+        button.disabled=level>=10;
     }
-
 }
 createPhaseUpgradeUI();
 updateGrass();
@@ -1061,4 +1053,9 @@ updateRiskis();
 updateLumos();
 updatePhaseEffects();
 updatePhaseUpgrades();
+for(let phase=1;phase<=3;phase++){
+    for(let i=0;i<10;i++){
+        updatePhaseUpgrade(phase,i);
+    }
+}
 updatePhaseUI();
