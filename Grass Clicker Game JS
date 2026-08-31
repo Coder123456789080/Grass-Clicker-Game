@@ -239,6 +239,76 @@ function buyTimeToGrass(){
     updateGrass();
 }
 
+function buyPhaseUpgrade(phase,index){
+    let upgrades;
+    let costs;
+    if(phase===1){
+        upgrades=phase1Upgrades;
+        costs=phase1Costs;
+    }
+    else if(phase===2){
+        upgrades=phase2Upgrades;
+        costs=phase2Costs;
+    }
+    else if(phase===3){
+        upgrades=phase3Upgrades;
+        costs=phase3Costs;
+    }
+    else{
+        return;
+    }
+    if(index<0||index>=10)return;
+    if(index>0&&upgrades[index-1]===0)return;
+    let cost=Math.ceil(costs[index]*Math.pow(1.5,upgrades[index]));
+    if(grass<cost)return;
+    grass-=cost;
+    upgrades[index]++;
+    applyPhaseUpgradeEffect(phase,index);
+    updateGrass();
+    updatePhaseUpgrades();
+}
+function applyPhaseUpgradeEffect(phase,index){
+    let level;
+    if(phase===1)level=phase1Upgrades[index];
+    if(phase===2)level=phase2Upgrades[index];
+    if(phase===3)level=phase3Upgrades[index];
+    if(level<=0)return;
+    upgradePhaseEffects();
+}
+function updatePhaseEffects(){
+    phaseUpgradeClickBonus=0;
+    phaseUpgradeAutoBonus=0;
+    phaseUpgradeCritBonus=0;
+    phaseUpgradeLuckBonus=0;
+    phaseUpgradeGemBonus=0;
+    phase1Upgrades.forEach((level,index)=>{
+        if(level>0){
+            if(index===0)phaseUpgradeClickBonus+=phase1Effects[index]*level;
+            if(index===1)phaseUpgradeAutoBonus+=phase1Effects[index]*level;
+            if(index===2)phaseUpgradeClickBonus+=phase1Effects[index]*level;
+            if(index===3)phaseUpgradeLuckBonus+=phase1Effects[index]*level;
+            if(index===4)phaseUpgradeAutoBonus+=phase1Effects[index]*level;
+            if(index===5)phaseUpgradeClickBonus+=phase1Effects[index]*level;
+            if(index===6)phaseUpgradeCritBonus+=phase1Effects[index]*level;
+            if(index===7)phaseUpgradeAutoBonus+=phase1Effects[index]*level;
+            if(index===8)phaseUpgradeLuckBonus+=phase1Effects[index]*level;
+            if(index===9)phaseUpgradeGemBonus+=phase1Effects[index]*level;
+        }
+    });
+    phase2Upgrades.forEach((level,index)=>{
+        if(level>0){
+            if(index%2===0)phaseUpgradeClickBonus+=phase2Effects[index]*level;
+            else phaseUpgradeAutoBonus+=phase2Effects[index]*level;
+        }
+    });
+    phase3Upgrades.forEach((level,index)=>{
+        if(level>0){
+            phaseUpgradeClickBonus+=phase3Effects[index]*level;
+            phaseUpgradeAutoBonus+=phase3Effects[index]*level;
+        }
+    });
+}
+
 function ascend(){
     if(!canAscend){
         alert("Unlock Grass Farmer first!");
