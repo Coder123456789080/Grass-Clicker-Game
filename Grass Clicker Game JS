@@ -309,6 +309,37 @@ function updatePhaseEffects(){
     });
 }
 
+function buyPhase1Upgrade(index){
+    if(!phase1Unlocked)return;
+    buyPhaseUpgrade(1,index);
+}
+function buyPhase2Upgrade(index){
+    if(!phase2Unlocked)return;
+    buyPhaseUpgrade(2,index);
+}
+function buyPhase3Upgrade(index){
+    if(!phase3Unlocked)return;
+    buyPhaseUpgrade(3,index);
+}
+
+function updatePhaseUpgrades(){
+    for(let i=0;i<10;i++){
+        const phase1Button=document.getElementById("phase1Level"+i);
+        const phase2Button=document.getElementById("phase2Level"+i);
+        const phase3Button=document.getElementById("phase3Level"+i);
+        if(phase1Level)phase1Level.textContent="Level "+phase1Upgrades[i];
+        if(phase2Level)phase2Level.textContent="Level "+phase2Upgrades[i];
+        if(phase3Level)phase3Level.textContent="Level "+phase2Upgrades[i];
+        const phase1Cost=document.getElementById("phase1Cost"+i);
+        const phase2Cost=document.getElementById("phase2Cost"+i);
+        const phase3Cost=document.getElementById("phase3Cost"+i);
+        if(phase1Cost)phase1Cost.textContent=Math.ceil(phase1Costs[i]*Math.pow(1.5,phase1Upgrades[i]));
+        if(phase2Cost)phase2Cost.textContent=Math.ceil(phase2Costs[i]*Math.pow(1.5,phase2Upgrades[i]));
+        if(phase3Cost)phase3Cost.textContent=Math.ceil(phase3Costs[i]*Math.pow(1.5,phase3Upgrades[i]));
+        
+    }
+}
+
 function ascend(){
     if(!canAscend){
         alert("Unlock Grass Farmer first!");
@@ -913,3 +944,5 @@ updateCostos();
 updateDuos();
 updateRiskis();
 updateLumos();
+updatePhaseEffects();
+updatePhaseUpgrades();
