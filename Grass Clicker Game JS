@@ -340,6 +340,42 @@ function updatePhaseUpgrades(){
     }
 }
 
+function unlockPhase(phase){
+    if(phase===1){
+        phase1Unlocked=true;
+        currentPhase=1;
+    }
+    if(phase===2){
+        phase2Unlocked=true;
+        curretPhase=2;
+    }
+    if(phase===3){
+        phase3Unlocked=true;
+        currentPhase=3;
+    }
+    updatePhaseUI();
+}
+function updatePhaseUI(){
+    const phase1=document.getElementById("phase1Upgrades");
+    const phase2=document.getElementById("phase2Upgrades");
+    const phase3=document.getElementById("phase3Upgrades");
+    if(phase1)phase1.style.display=phase1Unlocked?"block":"none";
+    if(phase2)phase2.style.display=phase2Unlocked?"block":"none";
+    if(phase3)phase3.style.display=phase3Unlocked?"block":"none";
+}
+function getPhaseCosts(phase){
+    if(phase===1)return phase1Costs;
+    if(phase===2)return phase2Costs;
+    if(phase===3)return phase3Costs;
+    return [];
+}
+function getPhaseNames(phase){
+    if(phase===1)return phase1Names;
+    if(phase===2)return phase2Names;
+    if(phase===3)return phase3Names;
+    return [];
+}
+
 function ascend(){
     if(!canAscend){
         alert("Unlock Grass Farmer first!");
