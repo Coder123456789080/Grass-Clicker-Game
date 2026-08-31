@@ -10,13 +10,13 @@ let magicFertilizer=false;
 let wormFarm=false;
 let grassGod=false;
 let canAscend=false;
-let ascendedGems=20;
+let ascendedGems=40;
 let autoTimers=[];
 let gaiaLevel=0,gaiaCost=1,gaiaMultiplier=1;
 let neroLevel=0,neroCost=1,neroMultiplier=1;
 let tempestLevel=0,tempestCost=1,tempestBonus=0;
 let colossusLevel=0,colossusCost=1,colossusBonus=1;
-let ignisLevel=0,ignisCost=1,ignisBonus=1;
+let ignisLevel=0,ignisCost=1,ignisBonus=0;
 let costosLevel=0,costosCost=1,costosMultiplier=1;
 let duosLevel=0,duosCost=1,duosMultiplier=1;
 let riskisLevel=0,riskisCost=1,riskisLuck=0;
@@ -41,7 +41,6 @@ grassImage.addEventListener("mouseleave",()=>{
 function incrementGrass(){
     clicks++;
     let gain=(grassPerClick+tempestBonus)*gaiaMultiplier*duosMultiplier;
-
     if(Math.random()<critChance)gain*=2;
     if(fertileGrass&&clicks%15===0)gain+=10;
     if(goldenWorms&&clicks%50===0)gain+=100;
@@ -49,7 +48,6 @@ function incrementGrass(){
     if(luckySeeds&&clicks%100===0&&Math.random()<getLuckChance(.25))gain+=1000;
     if(wormFarm&&clicks%10===0&&Math.random()<getLuckChance(.20))gain+=1000;
     if(magicFertilizer&&Math.random()<getLuckChance(getMagicFertilizerChance()))gain*=2;
-
     grass+=gain;
     showGrassGain(gain);
     updateGrass();
@@ -57,6 +55,34 @@ function incrementGrass(){
 
 function formatNumber(num){
     return Number.isInteger(num)?num:parseFloat(num.toFixed(2));
+}
+
+function getLumosGodBonus(basePercent){
+    if(lumosLevel===0)return basePercent;
+    if(lumosLevel===1)return basePercent+50;
+    if(lumosLevel===2)return basePercent+100;
+    if(lumosLevel===3)return basePercent+200;
+    if(lumosLevel===4)return basePercent+300;
+    return basePercent;
+}
+
+function getGodBonusText(basePercent){
+    if(lumosLevel===0)return basePercent+"%";
+    return `<span class="lumosBoost">${formatNumber(getLumosGodBonus(basePercent))}%</span>`;
+}
+
+function getLumosFlatBonus(baseAmount){
+    if(lumosLevel===0)return baseAmount;
+    if(lumosLevel===1)return baseAmount+1;
+    if(lumosLevel===2)return baseAmount+2;
+    if(lumosLevel===3)return baseAmount+3;
+    if(lumosLevel===4)return baseAmount+4;
+    return baseAmount;
+}
+
+function getFlatBonusText(baseAmount){
+    if(lumosLevel===0)return "+"+formatNumber(baseAmount);
+    return `<span class="lumosBoost">+${formatNumber(getLumosFlatBonus(baseAmount))}</span>`;
 }
 
 function updateGrass(){
@@ -72,9 +98,7 @@ function buyUpgrade(cost,action){
 }
 
 function buyClickUpgrade(){
-    buyUpgrade(50,()=>{
-        addClickPower(1);
-    });
+    buyUpgrade(50,()=>addClickPower(1));
 }
 
 function buyAutoUpgrade(){
@@ -84,9 +108,7 @@ function buyAutoUpgrade(){
 }
 
 function buyBetterSeeds(){
-    buyUpgrade(200,()=>{
-        addClickPower(2);
-    });
+    buyUpgrade(200,()=>addClickPower(2));
 }
 
 function buyGrasserV2(){
@@ -96,9 +118,7 @@ function buyGrasserV2(){
 }
 
 function buyCollector(){
-    buyUpgrade(800,()=>{
-        addClickPower(3);
-    })
+    buyUpgrade(800,()=>addClickPower(3));
 }
 
 function buyRustyMower(){
@@ -112,9 +132,7 @@ function buyWishFertilizer(){
 }
 
 function buyEliteSeeder(){
-    buyUpgrade(2500,()=>{
-        addClickPower(5);
-    });
+    buyUpgrade(2500,()=>addClickPower(5));
 }
 
 function buyRoboticGrasser(){
@@ -128,9 +146,7 @@ function buyFertileGrass(){
 }
 
 function buyMasterGrasser(){
-    buyUpgrade(3500,()=>{
-        addClickPower(10);
-    })
+    buyUpgrade(3500,()=>addClickPower(10));
 }
 
 function buyLuckySeeds(){
@@ -158,9 +174,7 @@ function buyChemicalFertilizer(){
 }
 
 function buyScarecrow(){
-    buyUpgrade(6500,()=>{
-        addClickPower(15);
-    })
+    buyUpgrade(6500,()=>addClickPower(15));
 }
 
 function buyAIGrasser(){
@@ -178,9 +192,7 @@ function buyWormFarm(){
 }
 
 function buyGrassGenie(){
-    buyUpgrade(8500,()=>{
-        addClickPower(20);
-    })
+    buyUpgrade(8500,()=>addClickPower(20));
 }
 
 function buyHumanoidGrasser(){
@@ -260,51 +272,47 @@ function buyGaiaUpgrade(){
 }
 
 function updateGaia(){
-   const levelText=document.getElementById("gaiaLevel");
-   const bonusText=document.getElementById("gaiaBonus");
-   const costText=document.getElementById("gaiaCost");
+    const levelText=document.getElementById("gaiaLevel");
+    const bonusText=document.getElementById("gaiaBonus");
+    const costText=document.getElementById("gaiaCost");
 
-   switch(gaiaLevel){
-    case 0:
-        gaiaMultiplier=1;
-        gaiaCost=1;
-        levelText.textContent="Level 0";
-        bonusText.textContent="Current Grass Bonus Per Click: 0%";
-        costText.textContent="1 Gem";
-        break;
-
-    case 1:
-        gaiaMultiplier= 1.5;
-        gaiaCost=3;
-        levelText.textContent="Level 1";
-        bonusText.textContent="Current Grass Bonus Per Click: 50%";
-        costText.textContent="3 Gems";
-        break;
-
-    case 2:
-        gaiaMultiplier= 3;
-        gaiaCost=6;
-        levelText.textContent="Level 2";
-        bonusText.textContent="Current Grass Bonus Per Click: 300%";
-        costText.textContent="6 Gems";
-        break;
-
-    case 3:
-        gaiaMultiplier= 6;
-        gaiaCost=10;
-        levelText.textContent="Level 3";
-        bonusText.textContent="Current Grass Bonus Per Click: 600%";
-        costText.textContent="10 Gems";
-        break;
-
-    case 4:
-        gaiaMultiplier= 12;
-        gaiaCost=0;
-        levelText.textContent="Level 4";
-        bonusText.textContent="Current Grass Bonus Per Click: 1200%";
-        costText.textContent="MAX LEVEL"
-        break;
-   }
+    switch(gaiaLevel){
+        case 0:
+            gaiaMultiplier=1;
+            gaiaCost=1;
+            levelText.textContent="Level 0";
+            bonusText.textContent="Current Grass Bonus Per Click: 0%";
+            costText.textContent="1 Gem";
+            break;
+        case 1:
+            gaiaMultiplier=lumosLevel===0?1.5:getLumosGodBonus(50)/100;
+            gaiaCost=3;
+            levelText.textContent="Level 1";
+            bonusText.innerHTML="Current Grass Bonus Per Click: "+getGodBonusText(50);
+            costText.textContent="3 Gems";
+            break;
+        case 2:
+            gaiaMultiplier=lumosLevel===0?3:getLumosGodBonus(300)/100;
+            gaiaCost=6;
+            levelText.textContent="Level 2";
+            bonusText.innerHTML="Current Grass Bonus Per Click: "+getGodBonusText(300);
+            costText.textContent="6 Gems";
+            break;
+        case 3:
+            gaiaMultiplier=lumosLevel===0?6:getLumosGodBonus(600)/100;
+            gaiaCost=10;
+            levelText.textContent="Level 3";
+            bonusText.innerHTML="Current Grass Bonus Per Click: "+getGodBonusText(600);
+            costText.textContent="10 Gems";
+            break;
+        case 4:
+            gaiaMultiplier=lumosLevel===0?12:getLumosGodBonus(1200)/100;
+            gaiaCost=0;
+            levelText.textContent="Level 4";
+            bonusText.innerHTML="Current Grass Bonus Per Click: "+getGodBonusText(1200);
+            costText.textContent="MAX LEVEL";
+            break;
+    }
 }
 
 function buyNeroUpgrade(){
@@ -321,11 +329,12 @@ function addAutoGrass(amount){
     showGrassGain(gain);
     updateGrass();
 }
-function updateNero(){
 
+function updateNero(){
     const levelText=document.getElementById("neroLevel");
     const bonusText=document.getElementById("neroBonus");
     const costText=document.getElementById("neroCost");
+
     switch(neroLevel){
         case 0:
             neroMultiplier=1;
@@ -334,40 +343,37 @@ function updateNero(){
             bonusText.textContent="Current Grass Bonus Per Auto Click: 0%";
             costText.textContent="1 Gem";
             break;
-
         case 1:
-            neroMultiplier=1.25;
+            neroMultiplier=lumosLevel===0?1.25:getLumosGodBonus(25)/100;
             neroCost=3;
             levelText.textContent="Level 1";
-            bonusText.textContent="Current Grass Bonus Per Auto Click: 25%";
+            bonusText.innerHTML="Current Grass Bonus Per Auto Click: "+getGodBonusText(25);
             costText.textContent="3 Gems";
             break;
-        
         case 2:
-            neroMultiplier=1.5;
+            neroMultiplier=lumosLevel===0?1.5:getLumosGodBonus(50)/100;
             neroCost=6;
             levelText.textContent="Level 2";
-            bonusText.textContent="Current Grass Bonus Per Auto Click: 50%";
+            bonusText.innerHTML="Current Grass Bonus Per Auto Click: "+getGodBonusText(50);
             costText.textContent="6 Gems";
             break;
-
-         case 3:
-            neroMultiplier=2.5;
+        case 3:
+            neroMultiplier=lumosLevel===0?2.5:getLumosGodBonus(250)/100;
             neroCost=10;
             levelText.textContent="Level 3";
-            bonusText.textContent="Current Grass Bonus Per Auto Click: 250%";
+            bonusText.innerHTML="Current Grass Bonus Per Auto Click: "+getGodBonusText(250);
             costText.textContent="10 Gems";
             break;
-
-         case 4:
-            neroMultiplier=4;
+        case 4:
+            neroMultiplier=lumosLevel===0?4:getLumosGodBonus(400)/100;
             neroCost=0;
             levelText.textContent="Level 4";
-            bonusText.textContent="Current Grass Bonus Per Auto Click: 400%";
-            costText.textContent="MAX LEVEL"
+            bonusText.innerHTML="Current Grass Bonus Per Auto Click: "+getGodBonusText(400);
+            costText.textContent="MAX LEVEL";
             break;
-            }
+    }
 }
+
 function buyTempestUpgrade(){
     if(tempestLevel>=4||ascendedGems<tempestCost)return;
     ascendedGems-=tempestCost;
@@ -377,10 +383,10 @@ function buyTempestUpgrade(){
 }
 
 function updateTempest(){
-    
     const levelText=document.getElementById("tempestLevel");
     const bonusText=document.getElementById("tempestBonus");
     const costText=document.getElementById("tempestCost");
+
     switch(tempestLevel){
         case 0:
             tempestBonus=0;
@@ -389,40 +395,37 @@ function updateTempest(){
             bonusText.textContent="Extra Per Click From Upgrades: +0";
             costText.textContent="1 Gem";
             break;
-
         case 1:
-            tempestBonus=1;
+            tempestBonus=lumosLevel===0?1:getLumosFlatBonus(1);
             tempestCost=3;
             levelText.textContent="Level 1";
-            bonusText.textContent="Extra Per Click From Upgrades: +1";
+            bonusText.innerHTML="Extra Per Click From Upgrades: "+getFlatBonusText(1);
             costText.textContent="3 Gems";
             break;
-
         case 2:
-            tempestBonus=3;
+            tempestBonus=lumosLevel===0?3:getLumosFlatBonus(3);
             tempestCost=6;
             levelText.textContent="Level 2";
-            bonusText.textContent="Extra Per Click From Upgrades: +3";
+            bonusText.innerHTML="Extra Per Click From Upgrades: "+getFlatBonusText(3);
             costText.textContent="6 Gems";
             break;
-
         case 3:
-            tempestBonus=6;
+            tempestBonus=lumosLevel===0?6:getLumosFlatBonus(6);
             tempestCost=10;
             levelText.textContent="Level 3";
-            bonusText.textContent="Extra Per Click From Upgrades: +6";
+            bonusText.innerHTML="Extra Per Click From Upgrades: "+getFlatBonusText(6);
             costText.textContent="10 Gems";
             break;
-
         case 4:
-            tempestBonus=12;
-            tempestCost=0
+            tempestBonus=lumosLevel===0?12:getLumosFlatBonus(12);
+            tempestCost=0;
             levelText.textContent="Level 4";
-            bonusText.textContent="Extra Per Click From Upgrades: +12";
+            bonusText.innerHTML="Extra Per Click From Upgrades: "+getFlatBonusText(12);
             costText.textContent="MAX LEVEL";
-            break;      
-  }
+            break;
+    }
 }
+
 function addClickPower(amount){
     grassPerClick+=amount;
 }
@@ -432,13 +435,14 @@ function buyColossusUpgrade(){
     ascendedGems-=colossusCost;
     colossusLevel++;
     updateColossus();
-    updateGems();
+    updategems();
 }
-function updateColossus(){
 
+function updateColossus(){
     const levelText=document.getElementById("colossusLevel");
     const bonusText=document.getElementById("colossusBonus");
     const costText=document.getElementById("colossusCost");
+
     switch(colossusLevel){
         case 0:
             colossusBonus=1;
@@ -448,33 +452,33 @@ function updateColossus(){
             costText.textContent="1 Gem";
             break;
         case 1:
-            colossusBonus=1.10;
+            colossusBonus=lumosLevel===0?1.10:1+getLumosGodBonus(10)/100;
             colossusCost=3;
             levelText.textContent="Level 1";
-            bonusText.textContent="Current Special Luck Bonuses: 10%";
+            bonusText.innerHTML="Current Special Luck Bonuses: "+getGodBonusText(10);
             costText.textContent="3 Gems";
             break;
         case 2:
-            colossusBonus=1.20;
+            colossusBonus=lumosLevel===0?1.20:1+getLumosGodBonus(20)/100;
             colossusCost=6;
             levelText.textContent="Level 2";
-            bonusText.textContent="Current Special Luck Bonuses: 20%";
+            bonusText.innerHTML="Current Special Luck Bonuses: "+getGodBonusText(20);
             costText.textContent="6 Gems";
             break;
         case 3:
-            colossusBonus=1.35;
+            colossusBonus=lumosLevel===0?1.35:1+getLumosGodBonus(35)/100;
             colossusCost=10;
             levelText.textContent="Level 3";
-            bonusText.textContent="Current Special Luck Bonuses: 35%";
+            bonusText.innerHTML="Current Special Luck Bonuses: "+getGodBonusText(35);
             costText.textContent="10 Gems";
             break;
         case 4:
-            colossusBonus=1.50;
-            colossusCost=0
+            colossusBonus=lumosLevel===0?1.50:1+getLumosGodBonus(50)/100;
+            colossusCost=0;
             levelText.textContent="Level 4";
-            bonusText.textContent="Current Special Luck Bonuses: 50%";
+            bonusText.innerHTML="Current Special Luck Bonuses: "+getGodBonusText(50);
             costText.textContent="MAX LEVEL";
-            break; 
+            break;
     }
 }
 
@@ -485,11 +489,12 @@ function buyIgnisUpgrade(){
     updateIgnis();
     updategems();
 }
-function updateIgnis(){
 
+function updateIgnis(){
     const levelText=document.getElementById("ignisLevel");
     const bonusText=document.getElementById("ignisBonus");
     const costText=document.getElementById("ignisCost");
+
     switch(ignisLevel){
         case 0:
             ignisBonus=0;
@@ -499,31 +504,31 @@ function updateIgnis(){
             costText.textContent="1 Gem";
             break;
         case 1:
-            ignisBonus=1;
+            ignisBonus=lumosLevel===0?1:getLumosFlatBonus(1);
             ignisCost=3;
             levelText.textContent="Level 1";
-            bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +1";
+            bonusText.innerHTML="Current Ignis Ascended Gem Bonus Per Ascension: "+getFlatBonusText(1);
             costText.textContent="3 Gems";
             break;
         case 2:
-            ignisBonus=2;
+            ignisBonus=lumosLevel===0?2:getLumosFlatBonus(2);
             ignisCost=6;
             levelText.textContent="Level 2";
-            bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +2";
+            bonusText.innerHTML="Current Ignis Ascended Gem Bonus Per Ascension: "+getFlatBonusText(2);
             costText.textContent="6 Gems";
             break;
         case 3:
-            ignisBonus=3;
+            ignisBonus=lumosLevel===0?3:getLumosFlatBonus(3);
             ignisCost=10;
             levelText.textContent="Level 3";
-            bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +3";
+            bonusText.innerHTML="Current Ignis Ascended Gem Bonus Per Ascension: "+getFlatBonusText(3);
             costText.textContent="10 Gems";
             break;
         case 4:
-            ignisBonus=4;
+            ignisBonus=lumosLevel===0?4:getLumosFlatBonus(4);
             ignisCost=0;
             levelText.textContent="Level 4";
-            bonusText.textContent="Current Ignis Ascended Gem Bonus Per Ascension: +4";
+            bonusText.innerHTML="Current Ignis Ascended Gem Bonus Per Ascension: "+getFlatBonusText(4);
             costText.textContent="MAX LEVEL";
             break;
     }
@@ -537,48 +542,51 @@ function buyCostosUpgrade(){
     updateUpgradePrices();
     updategems();
 }
-function updateCostos(){
 
+function updateCostos(){
     const levelText=document.getElementById("costosLevel");
     const bonusText=document.getElementById("costosBonus");
     const costText=document.getElementById("costosCost");
+
     switch(costosLevel){
         case 0:
             costosMultiplier=1;
             costosCost=1;
             levelText.textContent="Level 0";
-            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 0";
+            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 0%";
             costText.textContent="1 Gem";
             break;
         case 1:
-            costosMultiplier=.90;
+            costosMultiplier=lumosLevel===0?.90:.90-(lumosLevel===1?.05:lumosLevel===2?.10:lumosLevel===3?.20:.30);
             costosCost=3;
             levelText.textContent="Level 1";
-            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 10%";
+            bonusText.innerHTML="Upgrade Cost's Decreasing Bonus: "+getGodBonusText(10);
             costText.textContent="3 Gems";
             break;
         case 2:
-            costosMultiplier=.80;
+            costosMultiplier=lumosLevel===0?.80:.80-(lumosLevel===1?.05:lumosLevel===2?.10:lumosLevel===3?.20:.30);
             costosCost=6;
             levelText.textContent="Level 2";
-            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 20%";
+            bonusText.innerHTML="Upgrade Cost's Decreasing Bonus: "+getGodBonusText(20);
             costText.textContent="6 Gems";
             break;
         case 3:
-            costosMultiplier=.70;
+            costosMultiplier=lumosLevel===0?.70:.70-(lumosLevel===1?.05:lumosLevel===2?.10:lumosLevel===3?.20:.30);
             costosCost=10;
             levelText.textContent="Level 3";
-            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 30%";
+            bonusText.innerHTML="Upgrade Cost's Decreasing Bonus: "+getGodBonusText(30);
             costText.textContent="10 Gems";
             break;
         case 4:
-            costosMultiplier=.60;
+            costosMultiplier=lumosLevel===0?.60:.60-(lumosLevel===1?.05:lumosLevel===2?.10:lumosLevel===3?.20:.30);
             costosCost=0;
             levelText.textContent="Level 4";
-            bonusText.textContent="Upgrade Cost's Decreasing Bonus: 40%";
+            bonusText.innerHTML="Upgrade Cost's Decreasing Bonus: "+getGodBonusText(40);
             costText.textContent="MAX LEVEL";
             break;
     }
+
+    if(costosMultiplier<.05)costosMultiplier=.05;
 }
 
 function upgradeCost(price){
@@ -617,63 +625,64 @@ function buyDuosUpgrade(){
     updateDuos();
     updategems();
 }
-function updateDuos(){
 
+function updateDuos(){
     const levelText=document.getElementById("duosLevel");
     const bonusText=document.getElementById("duosBonus");
     const costText=document.getElementById("duosCost");
+
     switch(duosLevel){
         case 0:
             duosMultiplier=1;
             duosCost=1;
             levelText.textContent="Level 0";
             bonusText.textContent="Current Auto Grass And Grass Per Click Boost: 0%";
-            costText.textContent="1 gems";
+            costText.textContent="1 Gem";
             break;
         case 1:
-            duosMultiplier=1.3
+            duosMultiplier=lumosLevel===0?1.3:getLumosGodBonus(30)/100+1;
             duosCost=3;
             levelText.textContent="Level 1";
-            bonusText.textContent="Current Auto Grass And Grass Per Click Boost: 30%";
+            bonusText.innerHTML="Current Auto Grass And Grass Per Click Boost: "+getGodBonusText(30);
             costText.textContent="3 Gems";
             break;
         case 2:
-            duosMultiplier=2
+            duosMultiplier=lumosLevel===0?2:getLumosGodBonus(100)/100+1;
             duosCost=6;
             levelText.textContent="Level 2";
-            bonusText.textContent="Current Auto Grass And Per Click Boost: 200%";
+            bonusText.innerHTML="Current Auto Grass And Grass Per Click Boost: "+getGodBonusText(100);
             costText.textContent="6 Gems";
             break;
         case 3:
-            duosMultiplier=4
+            duosMultiplier=lumosLevel===0?4:getLumosGodBonus(400)/100+1;
             duosCost=10;
             levelText.textContent="Level 3";
-            bonusText.textContent="Current Auto Grass And Grass Per Click Boost: 400%";
-            costText.textContent="12 Gems";
+            bonusText.innerHTML="Current Auto Grass And Grass Per Click Boost: "+getGodBonusText(400);
+            costText.textContent="10 Gems";
             break;
         case 4:
-            duosMultiplier=6;
+            duosMultiplier=lumosLevel===0?6:getLumosGodBonus(600)/100+1;
             duosCost=0;
             levelText.textContent="Level 4";
-            bonusText.textContent="Current Auto Grass And Grass Per Click Boost: 600%";
+            bonusText.innerHTML="Current Auto Grass And Grass Per Click Boost: "+getGodBonusText(600);
             costText.textContent="MAX LEVEL";
             break;
-
     }
 }
 
 function buyRiskisUpgrade(){
     if(riskisLevel>=4||ascendedGems<riskisCost)return;
-        ascendedGems-=riskisCost;
-        riskisLevel++;
-        updateRiskis();
-        updategems();
-    }
-function updateRiskis(){
+    ascendedGems-=riskisCost;
+    riskisLevel++;
+    updateRiskis();
+    updategems();
+}
 
+function updateRiskis(){
     const levelText=document.getElementById("riskisLevel");
     const bonusText=document.getElementById("riskisBonus");
     const costText=document.getElementById("riskisCost");
+
     switch(riskisLevel){
         case 0:
             riskisLuck=0;
@@ -683,31 +692,31 @@ function updateRiskis(){
             costText.textContent="1 Gem";
             break;
         case 1:
-            riskisLuck=.5;
+            riskisLuck=lumosLevel===0?.05:getLumosGodBonus(5)/100;
             riskisCost=3;
             levelText.textContent="Level 1";
-            bonusText.textContent="Current Luck Boost: 5%";
+            bonusText.innerHTML="Current Luck Boost: "+getGodBonusText(5);
             costText.textContent="3 Gems";
             break;
         case 2:
-            riskisLuck=.10;
+            riskisLuck=lumosLevel===0?.10:getLumosGodBonus(10)/100;
             riskisCost=6;
             levelText.textContent="Level 2";
-            bonusText.textContent="Current Luck Boost: 10%";
+            bonusText.innerHTML="Current Luck Boost: "+getGodBonusText(10);
             costText.textContent="6 Gems";
             break;
         case 3:
-            riskisLuck=.20;
+            riskisLuck=lumosLevel===0?.20:getLumosGodBonus(20)/100;
             riskisCost=10;
             levelText.textContent="Level 3";
-            bonusText.textContent="Current Luck Boost: 20%";
+            bonusText.innerHTML="Current Luck Boost: "+getGodBonusText(20);
             costText.textContent="10 Gems";
             break;
         case 4:
-            riskisLuck=.35;
+            riskisLuck=lumosLevel===0?.35:getLumosGodBonus(35)/100;
             riskisCost=0;
             levelText.textContent="Level 4";
-            bonusText.textContent="Current Luck Boost: 35%";
+            bonusText.innerHTML="Current Luck Boost: "+getGodBonusText(35);
             costText.textContent="MAX LEVEL";
             break;
     }
@@ -716,28 +725,70 @@ function updateRiskis(){
 function getLuckChance(chance){
     return chance+riskisLuck;
 }
+
 function getMagicFertilizerChance(){
-    return .10*magicFertilizerMultiplier;
+    return .10;
 }
 
 function buyLumosUpgrade(){
-    if(lumosLevel>=1||ascendedGems<lumosCost)return;
-
+    if(lumosLevel>=4||ascendedGems<lumosCost)return;
     ascendedGems-=lumosCost;
-    lumosLevel=1;
-    lumosMultiplier=1.05;
-
-    if(gaiaLevel>=1)gaiaMultiplier*=lumosMultiplier;
-    if(neroLevel>=1)neroMultiplier*=lumosMultiplier;
-    if(tempestLevel>=1)tempestBonus+=1;
-    if(colossusLevel>=1)critChance*=lumosMultiplier;
-    if(ignisLevel>=1)ignisBonus+=1;
-    if(costosLevel>=1)costosMultiplier=.90;
-    if(duosLevel>=1)duosMultiplier*=lumosMultiplier;
-    if(riskisLevel>=1)riskisLuck*=lumosMultiplier;
-
+    lumosLevel++;
+    updateLumos();
+    updateGaia();
+    updateNero();
+    updateTempest();
+    updateColossus();
+    updateIgnis();
+    updateCostos();
+    updateDuos();
+    updateRiskis();
     updateUpgradePrices();
     updategems();
+}
+
+function updateLumos(){
+    const levelText=document.getElementById("lumosLevel");
+    const bonusText=document.getElementById("lumosBonus");
+    const costText=document.getElementById("lumosCost");
+
+    switch(lumosLevel){
+        case 0:
+            lumosMultiplier=1;
+            lumosCost=1;
+            levelText.textContent="Level 0";
+            bonusText.textContent="Current All God Boost: 0%";
+            costText.textContent="1 Gem";
+            break;
+        case 1:
+            lumosMultiplier=1.05;
+            lumosCost=3;
+            levelText.textContent="Level 1";
+            bonusText.textContent="Current All God Boost: 5%";
+            costText.textContent="3 Gems";
+            break;
+        case 2:
+            lumosMultiplier=1.10;
+            lumosCost=6;
+            levelText.textContent="Level 2";
+            bonusText.textContent="Current All God Boost: 10%";
+            costText.textContent="6 Gems";
+            break;
+        case 3:
+            lumosMultiplier=1.20;
+            lumosCost=10;
+            levelText.textContent="Level 3";
+            bonusText.textContent="Current All God Boost: 20%";
+            costText.textContent="10 Gems";
+            break;
+        case 4:
+            lumosMultiplier=1.30;
+            lumosCost=0;
+            levelText.textContent="Level 4";
+            bonusText.textContent="Current ALL God Boost: 30%";
+            costText.textContent="MAX LEVEL";
+            break;
+    }
 }
 
 function showGrassGain(amount){
@@ -767,3 +818,4 @@ updateIgnis();
 updateCostos();
 updateDuos();
 updateRiskis();
+updateLumos();
