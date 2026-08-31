@@ -404,3 +404,4 @@ body {
         font-size: 12px;
     }
 }
+.lumosBoost{color:#ffd700;font-weight:bold}
