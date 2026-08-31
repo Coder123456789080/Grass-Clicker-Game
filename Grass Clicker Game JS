@@ -65,6 +65,7 @@ grassImage.addEventListener("mouseleave",()=>{
 function incrementGrass(){
     clicks++;
     let gain=(grassPerClick+tempestBonus)*gaiaMultiplier*duosMultiplier;
+    gain*=1+phaseUpgradeClickBonus;
     if(Math.random()<critChance)gain*=2;
     if(fertileGrass&&clicks%15===0)gain+=10;
     if(goldenWorms&&clicks%50===0)gain+=100;
@@ -389,7 +390,7 @@ function ascend(){
     if(gemsEarned<1)gemsEarned=1;
     if(gemsEarned>10)gemsEarned=10;
     gemsEarned+=ignisBonus;
-
+    gemsEarned=Math.floor(gemsEarned*(1+phaseUpgradeGemBonus));
     ascendedGems+=gemsEarned;
     updategems();
     if(!phase1Unlocked){
@@ -492,7 +493,7 @@ function buyNeroUpgrade(){
 }
 
 function addAutoGrass(amount){
-    const gain=amount*neroMultiplier*duosMultiplier;
+    const gain=amount*neroMultiplier*duosMultiplier*(1+phaseUpgradeAutoBonus);
     grass+=gain;
     showGrassGain(gain);
     updateGrass();
