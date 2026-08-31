@@ -976,7 +976,77 @@ function showGrassGain(amount){
     document.body.appendChild(number);
     setTimeout(()=>number.remove(),1000);
 }
+function createPhaseUpgradeUI(){
+    createPhase(1);
+    createPhase(2);
+    createPhase(3);
+    updatePhaseUI();
+}
+function createPhase(phase){
+    const container=document.getElementById("phase"+phase+"Upgrades");
+    if(!container)return;
+    const names=getPhaseNames(phase);
+    const costs=getPhaseCosts(phase);
+    container.innerHTML="";
+    const title=document.createElement("h2");
+    title.textContent="PHASE "+phase;
+    container.appendChild(title);
+    for(let i=0;i<10;i++){
+        const card=document.createElement("div");
+        card.className="phaseUpgrade";
+        const name=document.createElement("h3");
+        name.id="phase"+phase+"Name"+i;
+        name.textContent=names[i];
+        const level=document.createElement("p");
+        level.id="phase"+phase+"Level"+i;
+        cost.textContent="Level 0/10";
+        const cost=document.createElement("p");
+        cost.id="phase"+phase+"Cost"+i;
+        cost.textContent=costs[i]+" Seeds";
+        const effect=document.createElement("p");
+        effect.id="phase"+phase+"Effect"+i;
+        effect.textContent="Effect coming soon";
+        const button=document.createElement("button");
+        button.id="phase"+phase+"Button"+i;
+        button.textContent="BUY";
+        button.onclick=()=>buyPhaseUpgrade(phase,i);
+        card.appendChild(name);
+        card.appendChild(level);
+        card.appendChild(cost);
+        card.appendChild(effect);
+        card.appendChild(button);
+        container.appendChild(card);
 
+    }
+}
+function buyPhaseUpgrades(phase,index){
+    const upgrades=phase===1?phase1Upgrades:phase===2?phase2Upgrades:phase3Upgrades;
+    const costs=getPhaseCosts(phase);
+    if(upgrades[index]>=10)return;
+    const cost=upgradeCost(costs[index]);
+    if(grass<cost)return;
+    grass-=cost;
+    upgrades[index]++;
+    updatePhaseUpgrade(phase,index);
+    updateGrass();
+}
+function updatePhaseUpgrade(phase,index){
+    const upgrades=phase===1?phase1Upgrades:phase===2?phase2Upgrades:phase3Upgrades;
+    const costs=getPhaseCosts(phase);
+    const level=upgrades[index];
+    document.getElementById("phase"+phase+"Level"+index).textContent="Level "+level+"/10";
+    if(level>=10){
+        document.getElementById("phase"+phase+"Cost"+index).textContent="MAX LEVEL";
+        document.getElementById("phase"+phase+"Button"+index).textContent="MAX";
+        document.getElementById("phase"+phase+"Button"+index).disabled=true;
+    }
+    else{
+        document.getElementById("phase"+phase+"Cost"+index).textContent=upgradeCost(costs[index])+" Seeds";
+        document.getElementById("phase"+phase+"Button"+index).textContent="BUY";
+    }
+
+}
+createPhaseUpgradeUI();
 updateGrass();
 updategems();
 updateUpgradePrices();
