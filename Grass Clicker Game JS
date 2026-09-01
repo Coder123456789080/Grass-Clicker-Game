@@ -1,4 +1,4 @@
-let grass=10000;
+let grass=0;
 let grassPerClick=1;
 let clicks=0;
 let critChance=0;
@@ -10,7 +10,7 @@ let magicFertilizer=false;
 let wormFarm=false;
 let grassGod=false;
 let canAscend=false;
-let ascendedGems=40;
+let ascendedGems=0;
 let autoTimers=[];
 let gaiaLevel=0,gaiaCost=1,gaiaMultiplier=1;
 let neroLevel=0,neroCost=1,neroMultiplier=1;
