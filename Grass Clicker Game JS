@@ -34,9 +34,39 @@ let phase3Permanent=Array(10).fill(false);
 let phase1Costs=[15000,20000,28000,38000,50000,65000,80000,100000,125000,150000];
 let phase2Costs=[175000,200000,225000,250000,300000,350000,400000,425000,450000,500000];
 let phase3Costs=[600000,650000,700000,750000,800000,850000,900000,950000,975000,1000000];
-let phase1Effects=[.10,.15,.20,.25,.30,.40,.50,.60,.75,1];
+let phase1Effects=[5,10,15,25,40,60,85,120,175,250];
 let phase2Effects=[1,1.25,1.5,1.75,2,2.5,3,3.5,4,5];
 let phase3Effects=[5,6,7,8,10,12,15,18,22,30];
+let phase1ClickBonus=0;
+let phase1AutoBonus=0;
+let phase1CritBonus=0;
+let phase1FertilizerBonus=0;
+let phase1GrassBonus=1;
+let phase1AutoSpeed=1;
+let phase1GoldenBonus=0;
+let phase1WormBonus=0;
+let phase1Multiplier=1;
+let phase1FinalBonus=1;
+let phase2ClickMultiplier=1;
+let phase2AutoMultiplier=1;
+let phase2CritBonus=0;
+let phase2LuckBonus=0;
+let phase2RewardMultiplier=1;
+let phase2AutoSpeed=1;
+let phase2GodMultiplier=1;
+let phase2GemBonus=0;
+let phase2Multiplier=1;
+let phase2FinalBonus=1;
+let phase3ClickMultiplier=1;
+let phase3AutoMultiplier=1;
+let phase3CritBonus=0;
+let phase3LuckBonus=0;
+let phase3RewardMultiplier=1;
+let phase3AutoSpeed=1;
+let phase3GodMultiplier=1;
+let phase3GemBonus=0;
+let phase3Multiplier=1;
+let phase3FinalBonus=1;
 let phase1Names=["Verdant Touch","Grassbound","Seed Surge","Rooted Fortune","Rapid Sprout","Fertile Domain","Nature's Glow","Emerald Plants","Wild Harvest","Ascended Roots"];
 let phase2Names=["Overgrowth","Lush Land","Seedstorm","Soil's Realm","Blissful Nature","Primal Harvest","Verdant Touch","Emerald Overdrive","Worldroot","Ascended Nature"];
 let phase3Names=["Eternal Growth","Genesis Seed","World Root Core","Divine Bloom","Infinite Harvest","Celestial Roots","Divine Roots","Lush World","The Verdant Realm","Transcendent"];
@@ -58,14 +88,14 @@ grassImage.addEventListener("mouseleave",()=>{
 
 function incrementGrass(){
     clicks++;
-    let gain=(grassPerClick+tempestBonus)*gaiaMultiplier*duosMultiplier;
-    if(Math.random()<critChance)gain*=2;
-    if(fertileGrass&&clicks%15===0)gain+=10;
-    if(goldenWorms&&clicks%50===0)gain+=100;
+    let gain=(grassPerClick+tempestBonus+phase1ClickBonus)*gaiaMultiplier*duosMultiplier*phase1Multiplier*phase1FinalBonus*phase2ClickMultiplier*phase2Multiplier*phase2FinalBonus*phase3ClickMultiplier*phase3Multiplier*phase3FinalBonus;
+    if(Math.random()<critChance+phase1CritBonus+phase2CritBonus+phase3CritBonus)gain*=2;
+    if(fertileGrass&&clicks%15===0)gain+=10+phase1FertilizerBonus;
+    if(goldenWorms&&clicks%50===0)gain+=100+phase1GoldenBonus;
     if(grassGod&&clicks%3===0)gain+=50;
-    if(luckySeeds&&clicks%100===0&&Math.random()<getLuckChance(.25))gain+=1000;
-    if(wormFarm&&clicks%10===0&&Math.random()<getLuckChance(.20))gain+=1000;
-    if(magicFertilizer&&Math.random()<getLuckChance(getMagicFertilizerChance()))gain*=2;
+    if(luckySeeds&&clicks%100===0&&Math.random()<getLuckChance(.25)+phase2LuckBonus+phase3LuckBonus)gain+=1000*phase2RewardMultiplier*phase3RewardMultiplier;
+    if(wormFarm&&clicks%10===0&&Math.random()<getLuckChance(.20)+phase2LuckBonus+phase3LuckBonus)gain+=(1000+phase1WormBonus)*phase2RewardMultiplier*phase3RewardMultiplier;
+    if(magicFertilizer&&Math.random()<getLuckChance(getMagicFertilizerChance()) )gain*=2;
     grass+=gain;
     showGrassGain(gain);
     updateGrass();
@@ -121,7 +151,7 @@ function buyClickUpgrade(){
 
 function buyAutoUpgrade(){
     buyUpgrade(100,()=>{
-        autoTimers.push(setInterval(()=>addAutoGrass(1),5000));
+        autoTimers.push(setInterval(()=>addAutoGrass(1),getAutoTime(5000)));
     });
 }
 
@@ -131,7 +161,7 @@ function buyBetterSeeds(){
 
 function buyGrasserV2(){
     buyUpgrade(400,()=>{
-        autoTimers.push(setInterval(()=>addAutoGrass(2),3000));
+        autoTimers.push(setInterval(()=>addAutoGrass(2),getAutoTime(3000)));
     });
 }
 
@@ -155,7 +185,7 @@ function buyEliteSeeder(){
 
 function buyRoboticGrasser(){
     buyUpgrade(2800,()=>{
-        autoTimers.push(setInterval(()=>addAutoGrass(5),2000));
+        autoTimers.push(setInterval(()=>addAutoGrass(5),getAutoTime(2000)));
     });
 }
 
@@ -173,7 +203,7 @@ function buyLuckySeeds(){
 
 function buyGrassFarmer(){
     buyUpgrade(5000,()=>{
-        autoTimers.push(setInterval(()=>addAutoGrass(10),2000));
+        autoTimers.push(setInterval(()=>addAutoGrass(10),getAutoTime(2000)));
         unlockAscension();
     });
 }
@@ -197,7 +227,7 @@ function buyScarecrow(){
 
 function buyAIGrasser(){
     buyUpgrade(7000,()=>{
-        autoTimers.push(setInterval(()=>addAutoGrass(15),1000));
+        autoTimers.push(setInterval(()=>addAutoGrass(15),getAutoTime(1000)));
     });
 }
 
@@ -215,13 +245,14 @@ function buyGrassGenie(){
 
 function buyHumanoidGrasser(){
     buyUpgrade(9000,()=>{
-        autoTimers.push(setInterval(()=>addAutoGrass(20),900));
+        autoTimers.push(setInterval(()=>addAutoGrass(20),getAutoTime(900)));
     });
 }
 
 function buyGrassGod(){
-    if(grass<upgradeCost(10000))return;
-    grass-=upgradeCost(10000);
+    const cost=upgradeCost(9500);
+    if(grass<cost)return;
+    grass-=cost;
     grassGod=true;
     updateGrass();
 }
@@ -232,34 +263,83 @@ function buyTimeToGrass(){
     addClickPower(30);
     updateGrass();
 }
-
+function applyPhase1Effects(){
+    phase1ClickBonus=phase1Upgrades[0]*5+phase1Upgrades[2]*10;
+    phase1AutoBonus=phase1Upgrades[1]*5;
+    phase1CritBonus=phase1Upgrades[3]*.02;
+    phase1AutoSpeed=1-phase1Upgrades[4]*.03;
+    phase1FertilizerBonus=phase1Upgrades[5]*25;
+    phase1GoldenBonus=phase1Upgrades[6]*50;
+    phase1Multiplier=1+phase1Upgrades[7]*.10;
+    phase1WormBonus=phase1Upgrades[8]*100;
+    phase1FinalBonus=1+phase1Upgrades[9]*.25;
+}
+function applyPhase2Effects(){
+    phase2ClickMultiplier=1+phase2Upgrades[0]*.10;
+    phase2AutomMultiplier=1+phase2Upgrades[1]*.10;
+    phase2CritBonus=phase2Upgrades[2]*.01;
+    phase2LuckBonus=phase2Upgrades[3]*.02;
+    phase2RewardMultiplier=1+phase2Upgrades[4]*.10;
+    phase2AutoSpeed=1-phase2Upgrades[5]*.03;
+    phase2GodMultiplier=1+phase2Upgrades[6]*.05;
+    phase2GemBonus=phase2Upgrades[7];
+    phase2Multiplier=1+phase2Upgrades[8]*.15;
+    phase2FinalBonus=1+phase2Upgrades[9]*.25;
+}
+function applyPhase3Effects(){
+    phase3Multiplier=1+phase3Upgrades[0]*.10;
+    phase3ClickBonus=phase3Upgrades[1]*5;
+    phase3AutoBonus=phase3Upgrades[2]*10;
+    phase3CritBonus=phase3Upgrades[3]*.01;
+    phase3LuckBonus=phase3Upgrades[4]*.02;
+    phase3RewardMultiplier=1+phase3Upgrades[5]*.10;
+    phase3GodMultiplier=1+phase3Upgrades[6]*.05;
+    phase3AutoSpeed=1-phase3Upgrades[7]*.03;
+    phase3GemBonus=phase3Upgrades[8];
+    phase3FinalBonus=1+phase3Upgrades[9]*.30;
+}
+function getAutoTime(baseTime){
+    return Math.max(100,Math.floor(baseTime*phase1AutoSpeed*phase2AutoSpeed*phase3AutoSpeed));
+}
 function buyPhaseUpgrade(phase,index){
     let upgrades;
     let costs;
+    let unlocked;
+
     if(phase===1){
         upgrades=phase1Upgrades;
         costs=phase1Costs;
-    }
-    else if(phase===2){
+        unlocked=phase1Unlocked;
+    }else if(phase===2){
         upgrades=phase2Upgrades;
         costs=phase2Costs;
-    }
-    else if(phase===3){
+        unlocked=phase2Unlocked;
+    }else if(phase===3){
         upgrades=phase3Upgrades;
         costs=phase3Costs;
-    }
-    else{
+        unlocked=phase3Unlocked;
+    }else{
         return;
     }
+
+    if(!unlocked)return;
     if(index<0||index>=10)return;
     if(index>0&&upgrades[index-1]===0)return;
     if(upgrades[index]>=10)return;
+
     let cost=Math.ceil(costs[index]*Math.pow(1.5,upgrades[index]));
     if(grass<cost)return;
+
     grass-=cost;
     upgrades[index]++;
+
+    applyPhase1Effects();
+    applyPhase2Effects();
+    applyPhase3Effects();
+
     updateGrass();
-    updatePhaseUpgrade(phase,index);
+    updatePhaseUpgrades();
+    updatePhaseUI();
 }
 
 
@@ -281,32 +361,57 @@ function updatePhaseUpgrades(){
         const phase1Level=document.getElementById("phase1Level"+i);
         const phase2Level=document.getElementById("phase2Level"+i);
         const phase3Level=document.getElementById("phase3Level"+i);
+
         if(phase1Level)phase1Level.textContent="Level "+phase1Upgrades[i]+"/10";
         if(phase2Level)phase2Level.textContent="Level "+phase2Upgrades[i]+"/10";
         if(phase3Level)phase3Level.textContent="Level "+phase3Upgrades[i]+"/10";
+
         const phase1Cost=document.getElementById("phase1Cost"+i);
         const phase2Cost=document.getElementById("phase2Cost"+i);
         const phase3Cost=document.getElementById("phase3Cost"+i);
+
         if(phase1Cost)phase1Cost.textContent=phase1Upgrades[i]>=10?"MAX LEVEL":Math.ceil(phase1Costs[i]*Math.pow(1.5,phase1Upgrades[i]))+" Seeds";
         if(phase2Cost)phase2Cost.textContent=phase2Upgrades[i]>=10?"MAX LEVEL":Math.ceil(phase2Costs[i]*Math.pow(1.5,phase2Upgrades[i]))+" Seeds";
         if(phase3Cost)phase3Cost.textContent=phase3Upgrades[i]>=10?"MAX LEVEL":Math.ceil(phase3Costs[i]*Math.pow(1.5,phase3Upgrades[i]))+" Seeds";
+
+        for(let phase=1;phase<=3;phase++){
+            const upgrades=phase===1?phase1Upgrades:phase===2?phase2Upgrades:phase3Upgrades;
+            const unlocked=phase===1?phase1Unlocked:phase===2?phase2Unlocked:phase3Unlocked;
+            const button=document.getElementById("phase"+phase+"Button"+i);
+
+            if(button){
+                const locked=i>0&&upgrades[i-1]===0;
+                button.disabled=!unlocked||locked||upgrades[i]>=10;
+
+                if(upgrades[i]>=10){
+                    button.textContent="MAX";
+                }else if(!unlocked){
+                    button.textContent="LOCKED";
+                }else if(locked){
+                    button.textContent="LOCKED";
+                }else{
+                    button.textContent="BUY";
+                }
+            }
+        }
     }
 }
 
 function unlockPhase(phase){
-    if(phase===1){
+    if(phase===1&&!phase1Unlocked){
         phase1Unlocked=true;
         currentPhase=1;
     }
-    if(phase===2){
+    if(phase===2&&!phase2Unlocked&&phase1Upgrades[9]>=10){
         phase2Unlocked=true;
         currentPhase=2;
     }
-    if(phase===3){
+    if(phase===3&&!phase3Unlocked&&phase2Upgrades[9]>=10){
         phase3Unlocked=true;
         currentPhase=3;
     }
     updatePhaseUI();
+    updatePhaseUpgrades();
 }
 function updatePhaseUI(){
     const phase1=document.getElementById("phase1Upgrades");
@@ -341,16 +446,21 @@ function ascend(){
     let gemsEarned=Math.floor(grass/1000)-3;
     if(gemsEarned<1)gemsEarned=1;
     if(gemsEarned>10)gemsEarned=10;
+
     gemsEarned+=ignisBonus;
+    gemsEarned+=phase2GemBonus;
+    gemsEarned+=phase3GemBonus;
+
     ascendedGems+=gemsEarned;
     updategems();
+
     if(!phase1Unlocked){
-    unlockPhase(1);} 
-    else if(phase1Unlocked&&!phase2Unlocked&&phase1Upgrades[9]>=10){
-    unlockPhase(2);}
-    else if(phase2Unlocked&&!phase3Unlocked&&phase2Upgrades[9]>=10){
-    unlockPhase(3);
-}
+        unlockPhase(1);
+    }else if(phase1Unlocked&&!phase2Unlocked&&phase1Upgrades[9]>=10){
+        unlockPhase(2);
+    }else if(phase2Unlocked&&!phase3Unlocked&&phase2Upgrades[9]>=10){
+        unlockPhase(3);
+    }
 
     grass=0;
     grassPerClick=1;
@@ -364,12 +474,18 @@ function ascend(){
     grassGod=false;
     clicks=0;
 
+    applyPhase1Effects();
+    applyPhase2Effects();
+    applyPhase3Effects();
+
     updateGrass();
+    updatePhaseUpgrades();
+    updatePhaseUI();
 
     document.querySelector(".categories button:nth-child(2)").disabled=false;
     document.querySelector(".categories button:nth-child(3)").disabled=false;
 
-    alert("You Ascended! You gained "+gemsEarned+" Ascended Gem(s)! Your upgrades were reset and new areas unlocked!");
+    alert("You Ascended! You gained "+gemsEarned+" Ascended Gem(s)! Your permanent phase upgrades remain active!");
 }
 
 function showCategory(category){
@@ -444,7 +560,7 @@ function buyNeroUpgrade(){
 }
 
 function addAutoGrass(amount){
-    const gain=amount*neroMultiplier*duosMultiplier;
+    const gain=(amount+phase1AutoBonus)*neroMultiplier*duosMultiplier*phase1Multiplier*phase1FinalBonus*phase2AutoMultiplier*phase2Multiplier*phase2FinalBonus*phase3AutoMultiplier*phase3Multiplier*phase3FinalBonus;
     grass+=gain;
     showGrassGain(gain);
     updateGrass();
@@ -958,6 +1074,7 @@ function createPhase(phase){
         effect.textContent="Effect coming soon";
         const button=document.createElement("button");
         button.id="phase"+phase+"Button"+i;
+        button.className="upgrade";
         button.textContent="BUY";
         button.onclick=()=>buyPhaseUpgrade(phase,i);
         card.appendChild(name);
@@ -974,17 +1091,70 @@ function updatePhaseUpgrade(phase,index){
     const costs=getPhaseCosts(phase);
     const effects=phase===1?phase1Effects:phase===2?phase2Effects:phase3Effects;
     const level=upgrades[index];
+
     const levelText=document.getElementById("phase"+phase+"Level"+index);
     const costText=document.getElementById("phase"+phase+"Cost"+index);
     const effectText=document.getElementById("phase"+phase+"Effect"+index);
     const button=document.getElementById("phase"+phase+"Button"+index);
+
     if(levelText)levelText.textContent="Level "+level+"/10";
-    if(costText)costText.textContent=level>=10?"MAX LEVEL":Math.ceil(costs[index]*Math.pow(1.5,level))+" Seeds";
-    if(effectText){
-        if(phase===1)effectText.textContent="+"+formatNumber(effects[index]*level*100)+"% Bonus";
-        if(phase===2)effectText.textContent="+"+formatNumber(effects[index]*level)+"x Bonus";
-        if(phase===3)effectText.textContent="+"+formatNumber(effects[index]*level)+"x Bonus";
+
+    if(costText){
+        costText.textContent=level>=10
+            ?"MAX LEVEL"
+            :Math.ceil(costs[index]*Math.pow(1.5,level))+" Seeds";
     }
+
+    if(effectText){
+        if(phase===1){
+            const descriptions=[
+                "+"+formatNumber(level*5)+" Grass Per Click",
+                "+"+formatNumber(level*5)+" Auto Grass",
+                "+"+formatNumber(level*10)+" Grass Per Click",
+                "+"+formatNumber(level*2)+"% Crit Chance",
+                "-"+formatNumber(level*3)+"% Auto Time",
+                "+"+formatNumber(level*25)+" Fertilizer Bonus",
+                "+"+formatNumber(level*50)+" Golden Worm Bonus",
+                "x"+formatNumber(1+level*.10)+" Grass Multiplier",
+                "+"+formatNumber(level*100)+" Worm Farm Bonus",
+                "x"+formatNumber(1+level*.25)+" Final Grass Bonus"
+            ];
+            effectText.textContent=descriptions[index];
+        }
+
+        if(phase===2){
+            const descriptions=[
+                "x"+formatNumber(1+level*.10)+" Click Multiplier",
+                "x"+formatNumber(1+level*.125)+" Auto Multiplier",
+                "+"+formatNumber(level)+"% Crit Chance",
+                "+"+formatNumber(level)+"% Luck",
+                "x"+formatNumber(1+level*.20)+" Special Reward Multiplier",
+                "-"+formatNumber(level*2)+"% Auto Time",
+                "x"+formatNumber(1+level*.15)+" God Power",
+                "+"+formatNumber(level)+" Gem Per Ascension",
+                "x"+formatNumber(1+level*.25)+" Phase Multiplier",
+                "x"+formatNumber(1+level*.50)+" Final Bonus"
+            ];
+            effectText.textContent=descriptions[index];
+        }
+
+        if(phase===3){
+            const descriptions=[
+                "x"+formatNumber(1+level*.25)+" Click Multiplier",
+                "x"+formatNumber(1+level*.30)+" Auto Multiplier",
+                "+"+formatNumber(level*2)+"% Crit Chance",
+                "+"+formatNumber(level*2)+"% Luck",
+                "x"+formatNumber(1+level*.50)+" Special Reward Multiplier",
+                "-"+formatNumber(level*3)+"% Auto Time",
+                "x"+formatNumber(1+level*.25)+" God Power",
+                "+"+formatNumber(level*2)+" Gems Per Ascension",
+                "x"+formatNumber(1+level*.75)+" Phase Multiplier",
+                "x"+formatNumber(1+level)+" Final Bonus"
+            ];
+            effectText.textContent=descriptions[index];
+        }
+    }
+
     if(button){
         button.textContent=level>=10?"MAX":"BUY";
         button.disabled=level>=10;
@@ -1003,6 +1173,9 @@ updateCostos();
 updateDuos();
 updateRiskis();
 updateLumos();
+applyPhase1Effects();
+applyPhase2Effects();
+applyPhase3Effects();
 updatePhaseUpgrades();
 for(let phase=1;phase<=3;phase++){
     for(let i=0;i<10;i++){
