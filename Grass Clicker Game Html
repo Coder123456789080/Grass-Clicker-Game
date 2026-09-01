@@ -24,7 +24,6 @@
 <div class="categories">
 <button onclick="showCategory('upgrades')">Upgrades</button>
 <button id="godsTab" onclick="showCategory('gods')">Gods</button>
-<button id="petsTab" onclick="showCategory('pets')">Pets</button>
 </div>
 <div class="shop-content">
 <div id="upgrades">
@@ -51,6 +50,11 @@
 <button class="upgrade" onclick="buyGrassGod()">Grass God:<br>+50 Grass Every 3 Clicks<br>Cost: <span id="grassGodPrice">9500</span> Seeds</button>
 <button class="upgrade" onclick="buyTimeToGrass()">Time to Grass:<br>+30 Grass Per Click<br>Cost: <span id="timeToGrassPrice">10000</span> Seeds</button>
 <button id="ascendButton" class="ascend" onclick="ascend()">ASCEND<br>Reset Progress For Power</button>
+<div id="phaseUpgrades">
+<div id="phase1Upgrades"></div>
+<div id="phase2Upgrades"></div>
+<div id="phase3Upgrades"></div>
+</div>
 </div>
 <div id="gods" style="display:none">
 <h3>Gods</h3>
